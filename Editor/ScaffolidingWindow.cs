@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
@@ -12,12 +13,11 @@ namespace UnityMVC.Editor
 {
     public class ScaffolidingWindow : EditorWindow
     {
-        //private string controllerName;
-        //private string viewName;
-        //private string modelName;
-
         private int selectedControllerIndex = 0;
+        private int lastSelectedControllerIndex = 0;
         private int selectedActionIndex = 0;
+        private int lastSelectedActionIndex = 0;
+
 
         private List<Type> controllers = new List<Type>();
         List<MethodInfo> actions = new List<MethodInfo>();
@@ -37,25 +37,39 @@ namespace UnityMVC.Editor
         {
             GUILayout.Label("Register View ", EditorStyles.boldLabel);
 
+            // Get all MonoControllers from project
             GetControllers();
 
-            if (controllers.Count > 0 && selectedControllerIndex != 0)
-                GetActions();
+            // Get all Action method from selected MonoController
+            GetActions();
 
-            if (actions.Count > 0 && selectedActionIndex != 0)
-                GetViewName();
+            // Get view name by combining Controller and Action name
+            GetViewName();
 
-            if (!string.IsNullOrEmpty(viewName) && actions.Count > 0 && selectedActionIndex != 0)
-                viewType = GetViewType();
+            // Get View Class of View Name, if it;s avaialble.
+            viewType = GetViewType(); // get view type
 
-            if (viewType != null && selectedActionIndex != 0)
+            // create View class, if not available
+            // Ask for boilerplate code generation, if not available
+            if (viewType == null && selectedControllerIndex != 0 && selectedActionIndex != 0)
+                CreateNewType();
+
+            // clear view prefab if new options are selected
+            ClearViewPrefabSelection();
+
+            // search view prefab in addressable entry
+            GetViewPrefabFromAddressable();
+
+            // Select view prefeb
+            if (viewType != null && selectedControllerIndex != 0 && selectedActionIndex != 0)
                 viewPrefab = EditorGUILayout.ObjectField("View Prefab", viewPrefab, typeof(GameObject), false);
 
-            if (viewPrefab && selectedActionIndex != 0 && selectedActionIndex != 0)
+            // Register or Modify prefab entry in Addressable
+            if (viewPrefab && selectedControllerIndex != 0 && selectedActionIndex != 0)
                 HandlePrefabViewRegister();
         }
 
-        private List<Type> GetControllers()
+        private void GetControllers()
         {
             Assembly[] availableAssembly = AppDomain.CurrentDomain.GetAssemblies();
 
@@ -64,16 +78,18 @@ namespace UnityMVC.Editor
 
             List<string> controllerNames = controllers.Select(t => t.Name).ToList();
             controllerNames.Insert(0, "None");
-            selectedControllerIndex = EditorGUILayout.Popup("Controller", selectedControllerIndex, controllerNames.ToArray());
 
-            return controllers;
+            selectedControllerIndex = EditorGUILayout.Popup("Controller", selectedControllerIndex, controllerNames.ToArray());
         }
 
-        private List<MethodInfo> GetActions()
+        private void GetActions()
         {
             var (validControllerSelection, controllerIndex) = ValidateControllerSelection();
             if (!validControllerSelection)
-                return null;
+                return;
+
+            //if (controllers.Count > 0 && selectedControllerIndex != 0)
+            //    return;
 
             Type selectedController = controllers[controllerIndex];
 
@@ -83,29 +99,67 @@ namespace UnityMVC.Editor
             List<string> actionNames = actions.Select(t => t.Name).ToList();
             actionNames.Insert(0, "None");
             selectedActionIndex = EditorGUILayout.Popup("Actions", selectedActionIndex, actionNames.ToArray());
-
-            return actions;
         }
 
-        private string GetViewName()
+        private void GetViewName()
         {
             var (validControllerSelection, controllerIndex) = ValidateControllerSelection();
             if (!validControllerSelection)
-                return "";
+                return;
+
+            //if (actions.Count > 0 && selectedActionIndex != 0)
+            //    return;
 
             Type selectedController = controllers[controllerIndex];
 
             int actionIndex = selectedActionIndex - 1;
             if (actionIndex < 0)
-                return "";
+                return;
 
             MethodInfo selectedAction = actions[actionIndex];
 
             viewName = $"{selectedController.Name.Replace("Controller", "")}{selectedAction.Name}";
 
             ReadOnlyTextField("View", viewName);
+        }
 
-            return viewName;
+        private void ClearViewPrefabSelection()
+        {
+            bool controllerSelectionChanged = lastSelectedControllerIndex != selectedControllerIndex;
+            
+            if (controllerSelectionChanged)
+                lastSelectedControllerIndex = selectedControllerIndex;
+
+            bool actionSelectionChanged = lastSelectedActionIndex != selectedActionIndex;
+
+            if (actionSelectionChanged)
+                lastSelectedActionIndex = selectedActionIndex;
+
+            if (controllerSelectionChanged || actionSelectionChanged)
+                viewPrefab = null;
+
+        }
+
+        private void GetViewPrefabFromAddressable()
+        {
+            // sanity checks
+            var (validControllerSelection, controllerIndex) = ValidateControllerSelection();
+            var (validActionSelection, actionIndex) = ValidateActionSelection();
+
+            if (!validControllerSelection || !validActionSelection)
+                return;
+
+            Type selectedController = controllers[controllerIndex];
+            MethodInfo selectedAction = actions[actionIndex];
+
+            string address = $"{selectedController.Name.Replace("Controller", "")}/{selectedAction.Name}";
+
+            var entry = AddressableEditor.FindEntryByAddress(address);
+
+            if (entry == null)
+                return;
+
+            viewPrefab = AssetDatabase.LoadAssetAtPath(entry.AssetPath, typeof(GameObject));
         }
 
         private Type GetViewType()
@@ -113,18 +167,53 @@ namespace UnityMVC.Editor
             if (string.IsNullOrEmpty(viewName))
                 return null;
 
-            Type view = null;
+            // sanity checks
+            var (validControllerSelection, _) = ValidateControllerSelection();
+            var (validActionSelection, _) = ValidateActionSelection();
+
+            if (!validControllerSelection || !validActionSelection)
+                return null;
+
+            //if (actions.Count > 0 && selectedControllerIndex != 0 && selectedActionIndex != 0)
+            //    return null;
+
+            Type viewType = null;
             string fullViewName = $"{viewName}View";
 
             Assembly[] availableAssembly = AppDomain.CurrentDomain.GetAssemblies();
 
             foreach (Assembly assembly in availableAssembly)
             {
-                view = EditorReflection.GetViewClass(assembly, fullViewName); // last arg -> HomeIndexView.cs
-                if (view != null)
+                viewType = EditorReflection.GetViewClass(assembly, fullViewName); // last arg -> HomeIndexView.cs
+                if (viewType != null)
                     break;
             }
-            var viewObj = AssetDatabase.LoadAssetAtPath($"{MvcSettings.Instance.viewClassFolder}/{fullViewName}.cs", typeof(MonoScript));
+
+            if (viewType == null) return null;
+
+            string viewTypeAssetPath = "";
+
+            var matchScriptsGUID = AssetDatabase.FindAssets($"{fullViewName} t:script");
+            foreach (var scriptGUID in matchScriptsGUID)
+            {
+                string scriptPath = AssetDatabase.GUIDToAssetPath(scriptGUID);
+                var script = (MonoScript)AssetDatabase.LoadAssetAtPath(scriptPath, typeof(MonoScript));
+                var scriptType = script.GetClass();
+
+                if (scriptType == viewType)
+                {
+                    if (scriptType.Namespace != viewType.Namespace)
+                        continue;
+                    if (scriptType.Assembly != viewType.Assembly)
+                        continue;
+                    viewTypeAssetPath = scriptPath;
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(viewTypeAssetPath)) return null;
+
+            var viewObj = AssetDatabase.LoadAssetAtPath(viewTypeAssetPath, typeof(MonoScript));
             if (viewObj != null)
             {
                 EditorGUILayout.BeginHorizontal();
@@ -134,10 +223,64 @@ namespace UnityMVC.Editor
                 EditorGUI.EndDisabledGroup();
                 EditorGUILayout.EndHorizontal();
             }
-            else if (view != null)
-                ReadOnlyTextField("View Class", $"{fullViewName}.cs found in Assembly, but not in {MvcSettings.Instance.viewClassFolder}.");
+
+            return viewType;
+        }
+
+        private Type CreateNewType()
+        {
+            string viewClassName = $"{viewName}View.cs";
+            string viewClassNameWithoutExt = viewClassName.Replace(".cs", "");
+
+            EditorGUILayout.HelpBox($"{viewClassName} is not found. Create new derived class from ViewContainer and name as {viewClassName}.", MessageType.Error);
+
+            if (!GUILayout.Button("Create View Class")) return null;
+
+            string path = EditorUtility.SaveFilePanelInProject("Save View Class", viewClassName, "cs",
+                "Please enter a file name to save the view class to");
+
+            string code =
+@"// This is generated code by UnityMVC Scaffolder
+// This can be added to any gameobject as Component
+// ViewContainer derives from MonoBehaviour
+// ViewContainer provides some property
+
+using UnityMVC;
+
+public class CLASS_NAME : ViewContainer
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
+";
+            code = code.Replace("CLASS_NAME", viewClassNameWithoutExt);
+
+            File.WriteAllText(path, code);
+            AssetDatabase.ImportAsset(path);
+
+
+            Type view = null;
+
+            Assembly[] availableAssembly = AppDomain.CurrentDomain.GetAssemblies();
+
+            foreach (Assembly assembly in availableAssembly)
+            {
+                view = EditorReflection.GetViewClass(assembly, viewClassNameWithoutExt); // last arg -> HomeIndexView.cs
+                if (view != null)
+                    break;
+            }
 
             return view;
+
         }
 
         private bool IsCorrectAddress(string expected, string actual)
@@ -237,6 +380,10 @@ namespace UnityMVC.Editor
                 {
                     EditorGUILayout.HelpBox($"View Prefab is already Registered in correct address - {viewEntry.address}.",
                     MessageType.Info);
+
+                    // remove entry 
+                    if (GUILayout.Button("Remove Entry"))
+                        AddressableEditor.RemoveEntry(viewEntry);
                 }
             }
             // entry not found anywhere, register

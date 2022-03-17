@@ -161,5 +161,42 @@ namespace UnityMVC
 
             return entry;
         }
+
+        public static AddressableAssetEntry FindEntryByAddress(string address)
+        {
+            var settings = GetDefaultSettings();
+
+            if (settings == null)
+            {
+                Debug.LogError("Default settings not found. Maybe it was not created or not assigned.");
+                return null;
+            }
+
+            List<AddressableAssetEntry> allEntries = settings.groups.SelectMany(g => g.entries).ToList();
+            AddressableAssetEntry entry = allEntries.FirstOrDefault(e => e.address == address);
+
+            return entry; 
+        }
+
+        public static AddressableAssetEntry RemoveEntry(AddressableAssetEntry entry)
+        {
+            if (entry == null)
+                return null;
+
+            var settings = GetDefaultSettings();
+
+            if (settings == null)
+            {
+                Debug.LogError("Default settings not found. Maybe it was not created or not assigned.");
+                return null;
+            }
+
+            var tmpEntry = entry;
+
+            // remove
+            settings.RemoveAssetEntry(entry.guid);
+            
+            return tmpEntry;
+        }
     }
 }
