@@ -50,7 +50,7 @@ namespace UnityMVC
             if (Result == null || model == null) return;
 
             GameObject resultGo = (GameObject)Result;
-            System.Type viewType = MVC.GetViewType(controllerName, viewName);
+            System.Type viewType = ReflectionHelper.GetViewType(controllerName, viewName);
 
             if (viewType == null)
                 throw new System.NullReferenceException($"No View class found for {viewName}.");

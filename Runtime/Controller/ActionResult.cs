@@ -22,19 +22,23 @@ namespace UnityMVC
         private AsyncOperationHandle handle;
         public AsyncOperationHandle Handle { get => handle; }
 
+        private GameObject instantiatedObject;
+        internal GameObject InstantiatedObject { get => instantiatedObject; }
+
+
         public virtual async Task ExecuteResultAsync()
         {
-            string location = $"{controllerName}/{viewName}";
-            //Result = (Object)Addressables.LoadAssetAsync<GameObject>(location);
-            handle = await AddressableLoader.LoadAssetAsync<GameObject>(location);
+            string address = GetAddress();
+
+            handle = await AddressableLoader.LoadAssetAsync<GameObject>(address);
 
             Result = (GameObject)handle.Result;
 
             if (Result == null)
                 throw new System.ArgumentNullException("Result", $"Couldn't find view at location - " +
-                    $"/Resources/{location}");
+                    $"/Resources/{address}");
 
-            Instantiate();
+            instantiatedObject = Instantiate();
         }
 
         /// <summary>
@@ -52,6 +56,40 @@ namespace UnityMVC
                 go = Object.Instantiate((GameObject)Result);
             
             return go;
+        }
+
+        internal bool Destroy()
+        {
+            if (instantiatedObject == null)
+                return false;
+            try 
+            {
+                UnityEngine.Object.Destroy(instantiatedObject);
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("Could not Destroy Action Result - " + e.Message);
+                return false;
+            }
+        }
+
+        internal void ReleaseReference()
+        {
+            if (!handle.IsValid())
+                return;
+
+            // release handle
+            Addressables.Release(handle);
+        }
+
+        internal string GetAddress()
+        {
+            if(string.IsNullOrEmpty(controllerName) || string.IsNullOrEmpty(viewName))
+                return string.Empty;
+
+            string address = $"{controllerName}/{viewName}";
+            return address;
         }
     }
 }

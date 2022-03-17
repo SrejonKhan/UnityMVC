@@ -6,9 +6,11 @@ namespace UnityMVC
 {
     public class MvcInitializer : MonoBehaviour
     {
+        public Canvas rootCanvas;
+
         private void Awake()
         {
-            MVC.Init(gameObject);
+            MVC.Init(gameObject, rootCanvas);
         }
     }
 }
