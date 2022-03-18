@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Reflection;
 using System.Linq;
+using UnityMVC.Utils;
 
 namespace UnityMVC
 {
@@ -79,32 +80,58 @@ namespace UnityMVC
 
             // invoke action method
             result = (ActionResult)actionMethod.Invoke(controllerInstance, actionMethodParams.ToArray());
-
-            // unload last of history
-            UnloadLastHistory();
-
-            // push to history
-            history.Add(result.GetAddress(), result);
+            result.OnResultInstantiated += OnViewInstantiated;
 
             return result;
         }
 
-        public static void UnloadLastHistory()
+        /// <summary>
+        /// On Current/Next view result instantiated
+        /// </summary>
+        /// <param name="view"></param>
+        private static void OnViewInstantiated(ActionResult view)
+        {
+            view.OnResultInstantiated -= OnViewInstantiated;
+
+            // unload last of history
+            if (view != null)
+            {
+                var nextHistory = new KeyValuePair<string, ActionResult>(view.GetAddress(), view);
+                StaticCoroutine.StartCoroutine(UnloadLastHistory(nextHistory));
+            }
+        }
+
+        /// <summary>
+        /// Unload last history if exist, and, add next to History
+        /// </summary>
+        /// <param name="next">Next History</param>
+        /// <returns></returns>
+        public static IEnumerator UnloadLastHistory(KeyValuePair<string, ActionResult> next)
         {
             var last = history.LastOrDefault();
 
-            if (last.Equals(default(KeyValuePair<string, ActionResult>)))
-                return;
+            bool lastExist = !last.Equals(default(KeyValuePair<string, ActionResult>));
+
+            // TODO: Before destroy, check if last history is not same as next
+            // if, wait for next action to load asset
+            // then destoy to avoid latency
+            // destroy
+            if (!lastExist)
+            {
+                history.Add(next.Key, next.Value);
+                yield break;
+            }
 
             // destroy
             last.Value.Destroy();
-
             // release addressable reference
-            last.Value.ReleaseReference(); 
+            last.Value.ReleaseReference();
 
             // No Remove as we want to keep a history?
             // history.Remove(last.Key);
-        }
 
+            // push next to history
+            history.Add(next.Key, next.Value);
+        }
     }
 }

@@ -25,6 +25,9 @@ namespace UnityMVC
         private GameObject instantiatedObject;
         internal GameObject InstantiatedObject { get => instantiatedObject; }
 
+        public delegate void ResultInstantiated(ActionResult view);
+        public event ResultInstantiated OnResultInstantiated;
+
 
         public virtual async Task ExecuteResultAsync()
         {
@@ -39,6 +42,7 @@ namespace UnityMVC
                     $"/Resources/{address}");
 
             instantiatedObject = Instantiate();
+            OnResultInstantiated?.Invoke(this); // invoke related event
         }
 
         /// <summary>
