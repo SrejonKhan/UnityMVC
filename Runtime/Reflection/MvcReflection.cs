@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace UnityMVC
 {
-    internal static class ReflectionHelper
+    internal static class MvcReflection
     {
         private static List<Type> monoControllerClasses = new List<Type>();
         internal static List<Type> MonoControllerClasses { get => monoControllerClasses; }
@@ -36,8 +36,19 @@ namespace UnityMVC
                 viewClasses.AddRange(GetViewClasses(assembly).ToList());
 
             // get all MonoController class instance available in scene
+            GetAllMonoControllerInstances();
+        }
+
+        private static void GetAllMonoControllerInstances()
+        {
             foreach (var monoControllerClass in monoControllerClasses)
-                monoControllerInstances[monoControllerClass] = Object.FindObjectOfType(monoControllerClass);
+            {
+                Object instance = MVC.MvcContainer.GetComponent(monoControllerClass);
+                instance = instance != null ? instance : MVC.MvcContainer.GetComponentInChildren(monoControllerClass);
+                instance = instance != null ? instance : Object.FindObjectOfType(monoControllerClass);
+
+                monoControllerInstances[monoControllerClass] = instance;
+            }
         }
 
         /// <summary>
