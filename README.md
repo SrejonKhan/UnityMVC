@@ -35,11 +35,15 @@ MVC.Navigate("Menu/Settings/en-bn", new Settings(defaultValue));
 ```
 
 # Getting Started
-If you want to get started quickly, it would be recommended to at least skimming through this example section, which will cover most of the features.  
+If you want to get started quickly, it would be recommended to at least skimming through this example section, which will cover most of the features. You can consider reading [Creating a Main Menu with MVC](#creating-a-main-menu-with-mvc) section for **step-by-step guide**.
+
 Or, If you want see all ***available reference, please jump to [Reference](#reference).*** 
 
+## How does it work? 
+UnityMVC makes it easier to load User Interface (it can be anything, any prefab), a.k.a Views without making many references or boilerplate work. Simply, if you want to load **Settings** panel in **Main Menu**, you just have to call `MVC.Navigate("Menu/Settings");` to load/instantiate **Settings** UI. But, for achieving this simple shorthand, we have to complete some simple prequisite steps. Before that, let's know how different pieces communicate with each other. Following diagram -
 ## Creating a Main Menu with MVC
 ### Goal
+Make a main menu with 
 ### Steps to create Controller
 ### Create Model 
 ### Create View
