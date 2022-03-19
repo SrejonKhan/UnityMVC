@@ -28,6 +28,8 @@ namespace UnityMVC
         public delegate void ResultInstantiated(ActionResult view);
         public event ResultInstantiated OnResultInstantiated;
 
+        private string routeUrl;
+        internal string RouteUrl { get => routeUrl; set => routeUrl = value; }
 
         public virtual async Task ExecuteResultAsync()
         {

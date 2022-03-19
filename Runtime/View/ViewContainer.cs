@@ -13,6 +13,16 @@ namespace UnityMVC
         {
             MVC.Navigate(routeUrl);
         }
+
+        public void NavigateBack()
+        {
+            MVC.NavigateBackward(1);
+        }
+
+        public void NavigateForward()
+        {
+            MVC.NavigateForward(1);
+        }
     }
 }
 

@@ -15,8 +15,14 @@ namespace UnityMVC
         private static Canvas rootCanvas;
         public static Canvas RootCanvas { get => rootCanvas; }
 
-        private static Dictionary<string, ActionResult> history = new Dictionary<string, ActionResult>();
-        public static Dictionary<string, ActionResult> History { get => history; }
+        private static List<ActionResult> history = new List<ActionResult>();
+        private static int currentHistIndex = 0;
+        private static Dictionary<string, object[]> historyParams = new Dictionary<string, object[]>();
+
+        private static ActionResult lastActiveView = null;
+
+        private enum NavigateType { None, Forward, Backward };
+        private static NavigateType navigateType = NavigateType.None;
 
         public static void Init(GameObject container, Canvas canvas)
         {
@@ -82,6 +88,14 @@ namespace UnityMVC
             result = (ActionResult)actionMethod.Invoke(controllerInstance, actionMethodParams.ToArray());
             result.OnResultInstantiated += OnViewInstantiated;
 
+            result.RouteUrl = routeUrl;
+
+            // add params to history
+            if (historyParams.ContainsKey(routeUrl))
+                historyParams[routeUrl] = args;
+            else
+                historyParams.Add(routeUrl, args);
+
             return result;
         }
 
@@ -95,43 +109,86 @@ namespace UnityMVC
 
             // unload last of history
             if (view != null)
-            {
-                var nextHistory = new KeyValuePair<string, ActionResult>(view.GetAddress(), view);
-                StaticCoroutine.StartCoroutine(UnloadLastHistory(nextHistory));
-            }
+                UnloadLastHistory(view);
         }
 
         /// <summary>
         /// Unload last history if exist, and, add next to History
         /// </summary>
-        /// <param name="next">Next History</param>
-        /// <returns></returns>
-        public static IEnumerator UnloadLastHistory(KeyValuePair<string, ActionResult> next)
+        /// <param name="next">Next History (View)</param>
+        public static void UnloadLastHistory(ActionResult next)
         {
-            var last = history.LastOrDefault();
-
-            bool lastExist = !last.Equals(default(KeyValuePair<string, ActionResult>));
-
-            // TODO: Before destroy, check if last history is not same as next
-            // if, wait for next action to load asset
-            // then destoy to avoid latency
-            // destroy
-            if (!lastExist)
+            // first navigation
+            if (lastActiveView == null)
             {
-                history.Add(next.Key, next.Value);
-                yield break;
+                history.Add(next);
+                lastActiveView = next;
+                return;
             }
 
-            // destroy
-            last.Value.Destroy();
+            // destroy previous view
+            lastActiveView.Destroy();
             // release addressable reference
-            last.Value.ReleaseReference();
+            lastActiveView.ReleaseReference();
 
-            // No Remove as we want to keep a history?
-            // history.Remove(last.Key);
+            // set current view to lastActiveView
+            lastActiveView = next;
 
-            // push next to history
-            history.Add(next.Key, next.Value);
+            // return if it's backward or forward navigation
+            if (navigateType == NavigateType.Forward || navigateType == NavigateType.Backward)
+            {
+                navigateType = NavigateType.None;
+                return;
+            }
+
+            //history.RemoveRange(currentHistIndex + 1, history.Count - (currentHistIndex + 1));
+            history.Add(next);
+            currentHistIndex++;
+        }
+
+        /// <summary>
+        /// Navigate backward to history
+        /// </summary>
+        /// <param name="steps">Steps to navigate back</param>
+        public static void NavigateBackward(int steps)
+        {
+            navigateType = NavigateType.Backward;
+
+            currentHistIndex = currentHistIndex - steps < 0 ? 0 : currentHistIndex - steps;
+
+            var view = history[currentHistIndex];
+
+            string routeUrl = view.RouteUrl;
+
+            object[] args = null;
+
+            if (historyParams.ContainsKey(routeUrl))
+                args = historyParams[routeUrl];
+
+            Navigate(routeUrl, args);
+
+        }
+
+        /// <summary>
+        /// Navigate forward to history 
+        /// </summary>
+        /// <param name="steps">Steps to navigate forward</param>
+        public static void NavigateForward(int steps)
+        {
+            navigateType = NavigateType.Forward;
+
+            currentHistIndex = currentHistIndex + steps >= history.Count ? history.Count - 1 : currentHistIndex + steps;
+
+            var view = history[currentHistIndex];
+
+            string routeUrl = view.RouteUrl;
+
+            object[] args = null;
+
+            if (historyParams.ContainsKey(routeUrl))
+                args = historyParams[routeUrl];
+
+            Navigate(routeUrl, args);
         }
     }
 }
