@@ -97,5 +97,34 @@ namespace UnityMVC
             string address = $"{controllerName}/{viewName}";
             return address;
         }
+
+        public override bool Equals(System.Object obj)
+        {
+            if (obj == null)
+                return false;
+
+            if (this == obj)
+                return true;
+
+            if (this.GetType() != obj.GetType())
+                return false;
+
+            ActionResult test = (ActionResult)obj;
+
+            if (this.routeUrl == test.routeUrl 
+                && this.controllerName == test.controllerName 
+                && this.viewName == test.viewName)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return routeUrl.GetHashCode(); 
+        }
+
     }
 }

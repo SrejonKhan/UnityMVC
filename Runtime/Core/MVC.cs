@@ -158,6 +158,10 @@ namespace UnityMVC
 
             var view = history[currentHistIndex];
 
+            
+            if (view.Equals(lastActiveView))
+                return;
+
             string routeUrl = view.RouteUrl;
 
             object[] args = null;
@@ -180,6 +184,9 @@ namespace UnityMVC
             currentHistIndex = currentHistIndex + steps >= history.Count ? history.Count - 1 : currentHistIndex + steps;
 
             var view = history[currentHistIndex];
+
+            if (view.Equals(lastActiveView))
+                return;
 
             string routeUrl = view.RouteUrl;
 
