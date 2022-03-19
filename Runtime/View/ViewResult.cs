@@ -38,6 +38,9 @@ namespace UnityMVC
             this.controllerName = controllerName;
             this.viewName = viewName;
 
+            if (Parent == null && MVC.RootCanvas.gameObject)
+                Parent = MVC.RootCanvas.transform;
+
             // resolve
             await ExecuteResultAsync();
         }

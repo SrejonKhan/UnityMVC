@@ -40,8 +40,8 @@ namespace UnityMVC
             Result = (GameObject)handle.Result;
 
             if (Result == null)
-                throw new System.ArgumentNullException("Result", $"Couldn't find view at location - " +
-                    $"/Resources/{address}");
+                throw new System.ArgumentNullException("Result", $"Couldn't find view at address - " +
+                    $"{address}");
 
             instantiatedObject = Instantiate();
             OnResultInstantiated?.Invoke(this); // invoke related event
