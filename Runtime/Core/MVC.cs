@@ -63,7 +63,8 @@ namespace UnityMVC
             {
                 // As we can't instance Mono Class with new keyword, 
                 // we will inject a component into mvcContainer
-                var comp = mvcContainer.AddComponent(controllerType);
+                var comp = new GameObject(controllerName + "Controller").AddComponent(controllerType);
+                comp.transform.parent = mvcContainer.transform;
                 ReflectionHelper.MonoControllerInstances[controllerType] = comp;
                 controllerInstance = comp;
             }
@@ -158,7 +159,6 @@ namespace UnityMVC
 
             var view = history[currentHistIndex];
 
-            
             if (view.Equals(lastActiveView))
                 return;
 
