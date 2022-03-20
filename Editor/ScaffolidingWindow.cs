@@ -239,6 +239,8 @@ namespace UnityMVC.Editor
             string path = EditorUtility.SaveFilePanelInProject("Save View Class", viewClassName, "cs",
                 "Please enter a file name to save the view class to");
 
+            if (string.IsNullOrEmpty(path)) return null;
+
             string code =
 @"// This is generated code by UnityMVC Scaffolder
 // This can be added to any gameobject as Component

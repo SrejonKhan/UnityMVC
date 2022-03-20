@@ -21,7 +21,7 @@ namespace UnityMVC
 
             if (settings == null)
             {
-                Debug.LogError("Default settings not found. Maybe it was not created or not assigned.");
+                Debug.LogError("Default settings of Addressabale not found. Maybe it was not created or not assigned.");
                 return null;
             }
 
@@ -60,7 +60,7 @@ namespace UnityMVC
 
             if (settings == null)
             {
-                Debug.LogError("Default settings not found. Maybe it was not created or not assigned.");
+                Debug.LogError("Default settings of Addressabale not found. Maybe it was not created or not assigned.");
                 return (false, null);
             }
 
@@ -91,7 +91,7 @@ namespace UnityMVC
 
             if (settings == null)
             {
-                Debug.LogError("Default settings not found. Maybe it was not created or not assigned.");
+                Debug.LogError("Default settings of Addressabale not found. Maybe it was not created or not assigned.");
                 return false;
             }
 
@@ -142,7 +142,7 @@ namespace UnityMVC
 
             if (settings == null)
             {
-                Debug.LogError("Default settings not found. Maybe it was not created or not assigned.");
+                Debug.LogError("Default settings of Addressabale not found. Maybe it was not created or not assigned.");
                 return null;
             }
 
@@ -187,7 +187,7 @@ namespace UnityMVC
 
             if (settings == null)
             {
-                Debug.LogError("Default settings not found. Maybe it was not created or not assigned.");
+                Debug.LogError("Default settings of Addressabale not found. Maybe it was not created or not assigned.");
                 return null;
             }
 

@@ -56,7 +56,79 @@ As the final step, UnityMVC invoke all methods in View Class, that has [InvokeAt
 
 **This is a diagram that is TL;DR of above explanation -**
 
+## Controller
+All Controller class should derives from `MonoController`. On the other hand, `MonoController` derives from `MonoBehaviour`, which let `MonoController`'s derived class (Controllers) to be added to GameObject as Component and receive Unity messages (Awake, Start, Update, FixedUpdate). 
 
+Example -
+```csharp
+using UnityMVC;
+
+public class MenuController : MonoController
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        // Do something in Start
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // Do something in Update
+    }
+
+    // This is an Action Method
+    // calling MVC.Navigate("Menu/Index");
+    // will instantiate MenuIndex View 
+    public ViewResult Settings()
+    {
+        return View();
+    }
+}
+```
+Please note that, `Index()` is an Action Method for `MenuController`. This method will invoked when we call `MVC.Navigate("Menu/Settings")`. Every action method **must return ViewResult object**. `ViewResult` can be returned by calling `View()` method in any Controller class that derives from `MonoController`. This `View()` method also accept other parameters, please visit [Reference](#reference) for details.
+
+There is a Context Menu for creating a Controller Class. It can be also done manually. For doing it quickly and without any mistakes, use Context Menu. 
+
+Create a Controller class with MVC Context Menu -
+1. Right click on any empty space in Asset window. 
+2. Click `MVC -> Create Controller Class`
+3. Write Controller name in Coge Gen Editor Window. Controller name should be without 'Controller' in it's name. For example, to create a MenuController, controller name should **'Menu'** only.
+4. Click on **Create Controller Class** button.
+5. Done.
+
+![ControllerClassContextMenu.gif](https://i.imgur.com/hni3FIv.gif)
+
+## View
+### View Prefab
+View Prefab is the prefab that instantiate when action method is invoked for that particular view. View Prefab is loaded by Addressable. So, all View Prefabs are Addressable. View Prefab can be located in any location in Assets. It doesn't need to be follow any special convention.
+
+Creating a View Prefab is simple, just make a prefab of your UI Panel or something else by drag and drop in Asset Window. No need to follow any other steps for View Prefab, or it doesn't need to be manually addressed in Addressable. Scaffolding will take care of that. We will talk about Scaffolding later.   
+### View Class
+View Class added to View Prefab as a Component. View Class can be either added in prefab or it will be added by UnityMVC when resolving a Navigate call. It's better to add before in Prefab. View Class is derived from `ViewContainer` class.
+
+View Class must maintain a convention for it's name. ViewClass name should be a concatenated string of Controller Name, Action Name and suffix "View" to the end (`{ControllerName}{ActionName}View.cs`). For example, View Class for **Home Controller** and **Settings** action should be **`HomeSettingsView`**. 
+
+Creating View Class is also hassle free. Scaffolding will ask you to create one on behalf of you. It will be discussed in [Scaffolding](#scaffolding) section.
+
+```csharp
+//settings view class that shows it changes settings
+```
+## Model
+Model is a simple C# class, without any base class or any convention. Model is responsible for holding data, not any other responsibility. Model object can be passed in `View(model)` from Action, then it will be injected into View Class for that corresponding Controller and Action. Later, Model object can be access from View Class's `Model` field. Note that, all view classes are derived from **`ViewContainer`** base class, and `ViewContainer` has a object field of `Model`. So any particual View Class doesn't need to explicitly declare field for `Model`. 
+Example - 
+```csharp
+// This is Model Class
+public class Settings
+{
+    public string currentLocale = "en-bn";
+    public int musicOption = 0;
+    public float musicVolume = 1;
+
+    public int videoQuality = 3;
+}
+```
+## Scaffolding
 ## Creating a Main Menu with MVC
 ### Goal
 Make a main menu with 
