@@ -16,17 +16,14 @@ namespace UnityMVC
         private Transform parent;
         public Transform Parent { get => parent; private protected set => parent = value; }
 
-        private ViewContainer viewContainer;
-        public ViewContainer ViewContainer { get => viewContainer; private protected set => viewContainer = value; }
-
         private AsyncOperationHandle handle;
         public AsyncOperationHandle Handle { get => handle; }
 
         private GameObject instantiatedObject;
         internal GameObject InstantiatedObject { get => instantiatedObject; }
 
-        public delegate void ResultInstantiated(ActionResult view);
-        public event ResultInstantiated OnResultInstantiated;
+        internal delegate void ResultInstantiated(ActionResult view);
+        internal event ResultInstantiated OnResultInstantiated;
 
         private string routeUrl;
         internal string RouteUrl { get => routeUrl; set => routeUrl = value; }

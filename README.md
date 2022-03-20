@@ -42,6 +42,10 @@ Or, If you want see all ***available reference, please jump to [Reference](#refe
 ## How does it work? 
 UnityMVC makes it easier to load User Interface (it can be anything, any prefab), a.k.a Views without making many references or boilerplate work. Simply, if you want to load **Settings** panel in **Main Menu**, you just have to call `MVC.Navigate("Menu/Settings");` to load/instantiate **Settings** UI. 
 
+***This is a diagram that is TL;DR of the explanation -***
+
+![Diagram](https://i.imgur.com/4DG5Vy1.png)
+
 As [Conventional Based Routing](#conventional-based-routing) refers, first part of the URL is Controller name. So, MVC will try to resolve first part of the URL when `Navigate()` get called. UnityMVC will look for that **Controller** class, in our case `MenuController`. UnityMVC uses **Reflection** behind the scene to execute most of it's task. UnityMVC caches all MonoController classes from all available assembly, at the very first `Awake()` call of Scene lifetime. It also try keep all instances of all controller classes in the scene, as MonoController (MonoBehaviour) can't be instantiated with `new` keyword. This finding instance query happens in a particular order to avoid full hierarchy combing for a instance. MVC will first try to get reference (`GetComponent()`) from **MvcContainer** gameobject, which has **MvcInitializer** as it's Component. If the reference is not there, it will then search in childs (`GetComponentInChildren()`), even if not found, it will search whole scene (`FindObjectOfType()`). In worst, if the scene also doesn't have any instance, the following instance will be created by UnityMVC while resolving particular request in Runtime. To avoid overhead, it's recommended to keep instances of Controller classes in Scene, as a child or flat level component of **MvcContainer** GameObject. 
 
 This is how UnityMVC resolves first part of routeUrl, that means UnityMVC has now corresponding Controller class to proceed further. After resolving first part, it's time for resolving the second part of the Url, which basically is the **Action** name of corresponding Controller. Actions are methods in Controller class, that returns `ViewResult` object. Action basically handles all sort of work for that particular call, select view, load and return it. In our case, our action method is `Settings()`. In this part of resolving, UnityMVC will invoke `Settings()` in `HomeController`. `Settings()` action can perform some task, prepare model (optional) and select proper view*. Yes, Action method can select any View to show. `View()` in `MonoController` has some overloaded methods, where some of them accept **View Name** in their argument. If any view name has not passed, UnityMVC will take CalledMethod name as View name, in our case it is Settings.
@@ -53,8 +57,6 @@ After loading view from Addressable, UnityMVC will instantiate it under `MVC.Roo
 If there is any Model for that particular view has been passed as argument in `View()` method, it will be injected to View Class in `Model` field. Note that, all view classes are derived from **`ViewContainer`** base class, and `ViewContainer` has a object field of `Model`. So any particual View Class doesn't need to explicitly declare field for `Model`. 
 
 As the final step, UnityMVC invoke all methods in View Class, that has [InvokeAttribute](#invokeattribute) placed on them. 
-
-**This is a diagram that is TL;DR of above explanation -**
 
 ## Controller
 All Controller class should derives from `MonoController`. On the other hand, `MonoController` derives from `MonoBehaviour`, which let `MonoController`'s derived class (Controllers) to be added to GameObject as Component and receive Unity messages (Awake, Start, Update, FixedUpdate). 
@@ -103,7 +105,12 @@ Create a Controller class with MVC Context Menu -
 ### View Prefab
 View Prefab is the prefab that instantiate when action method is invoked for that particular view. View Prefab is loaded by Addressable. So, all View Prefabs are Addressable. View Prefab can be located in any location in Assets. It doesn't need to be follow any special convention.
 
-Creating a View Prefab is simple, just make a prefab of your UI Panel or something else by drag and drop in Asset Window. No need to follow any other steps for View Prefab, or it doesn't need to be manually addressed in Addressable. Scaffolding will take care of that. We will talk about Scaffolding later.   
+Creating a View Prefab is simple, just make a prefab of your UI Panel or something else by drag and drop in Asset Window. No need to follow any other steps for View Prefab, or it doesn't need to be manually addressed in Addressable. Scaffolding will take care of that. We will talk about Scaffolding later. 
+
+Example -
+
+![ViewPrefab.png](https://i.imgur.com/s5HApF0.png)
+
 ### View Class
 View Class added to View Prefab as a Component. View Class can be either added in prefab or it will be added by UnityMVC when resolving a Navigate call. It's better to add before in Prefab. View Class is derived from `ViewContainer` class.
 
@@ -111,8 +118,50 @@ View Class must maintain a convention for it's name. ViewClass name should be a 
 
 Creating View Class is also hassle free. Scaffolding will ask you to create one on behalf of you. It will be discussed in [Scaffolding](#scaffolding) section.
 
+Example -
+
 ```csharp
-//settings view class that shows it changes settings
+using UnityMVC;
+using UnityEngine.UI;
+
+public class MenuSettingsView : ViewContainer
+{
+    public Dropdown musicOptionDropdown;
+    public Slider musicVolumeSlider;
+    public Dropdown videoQualityDropdown;
+
+    // unity messages are supported
+    // as ViewContainer derives from MonoBehaviour
+    void Start() { }
+    void Update() { }
+
+    // it will be automatically called when View is isn
+    [Invoke]
+    void Init()
+    {
+        if(Model == null) return;
+
+        var model = (Settings)Model; // model object
+
+        musicOptionDropdown.value = model.musicOption;
+        musicVolumeSlider.value = model.musicVolume;
+        videoQualityDropdown.value = model.videoQuality;
+
+        musicOptionDropdown.onValueChanged.AddListener(MusicOptionChanged);
+        musicVolumeSlider.onValueChanged.AddListener(VolumeChange);
+        videoQualityDropdown.onValueChanged.AddListener(VideoQualityChange);
+    }
+
+    void MusicOptionChanged(int value)
+    {
+        // some functionality
+        ...
+    }
+
+    // rest of the code
+    ... 
+
+}
 ```
 ## Model
 Model is a simple C# class, without any base class or any convention. Model is responsible for holding data, not any other responsibility. Model object can be passed in `View(model)` from Action, then it will be injected into View Class for that corresponding Controller and Action. Later, Model object can be access from View Class's `Model` field. Note that, all view classes are derived from **`ViewContainer`** base class, and `ViewContainer` has a object field of `Model`. So any particual View Class doesn't need to explicitly declare field for `Model`. 
@@ -124,33 +173,64 @@ public class Settings
     public string currentLocale = "en-bn";
     public int musicOption = 0;
     public float musicVolume = 1;
-
     public int videoQuality = 3;
 }
 ```
 ## Scaffolding
-## Creating a Main Menu with MVC
-### Goal
-Make a main menu with 
-### Steps to create Controller
-### Create Model 
-### Create View
-### Navigating 
+Scaffolding reduces a lot of work. Scaffolding comes handy when you have created Controller Class, Action Methods and View Prefab for Action. 
+
+Scaffolding Window will create a View Class for corresponding Controller and Action. Then register View Prefab in Addressable. 
+
+![ScaffoldingWindow](https://i.imgur.com/AOnPN1B.gif)
+
+Features: 
+1. Create View Class for selected Controller and Action Method
+2. Register View Prefab to Addressable
+3. Error check (if View Prefab is registered to wrong address).
+
+# Creating a Main Menu with MVC
+## Goal
+Make a main menu with UnityMVC.
+## Create UI
+## Create Controller
+## Create Model 
+## Create View
+## Navigating 
 
 # Reference
 ### MVC
 ```csharp
-MVC.Navigate(string routeUrl);
-MVC.Navigate(string routeUrl, param object[] args);
+public static ActionResult Navigate(string routeUrl);
+public static ActionResult Navigate(string routeUrl, params object[] args);
+public static void NavigateBackward(int steps);
+public static void NavigateForward(int steps);
+
+public static GameObject MvcContainer;
+public static Canvas RootCanvas;
 ```
 ### MonoController
 Base Class for every Controller Class.
 ```csharp
-public ViewResult View(); // Method Name == View Name
-public ViewResult View(string viewName);
-public ViewResult View()
+// Note - Method Name == View Name if not passed any
+public ViewResult View(string viewName = null);
+public ViewResult View(Transform parent, string viewName = null);
+public ViewResult View(object model, string viewName = null);
+public ViewResult View(Transform parent, object model, string viewName);    
 ```
 
+### ActionResult 
+```csharp
+public UnityEngine.Object Result;
+public Transform Parent;
+```
+### View Container
+```csharp
+public object Model;
+// Handy method for UI OnClick
+public void Navigate(string routeUrl);
+public void NavigateBack();
+public void NavigateForward();
+```
 # Conventional Based Routing
 Navigations are done by conventional based routing. Each routeUrl defines something, that makes whole MVC to work perfect. Following is a general route url - 
 ```csharp
