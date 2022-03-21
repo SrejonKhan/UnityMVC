@@ -18,7 +18,7 @@ namespace UnityMVC
             return handle;
         }
 
-        public static void ReleaseHanle(AsyncOperationHandle handle)
+        public static void ReleaseHandle(AsyncOperationHandle handle)
         {
             Addressables.Release(handle);
         }
