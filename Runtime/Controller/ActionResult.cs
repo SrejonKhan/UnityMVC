@@ -34,11 +34,12 @@ namespace UnityMVC
 
             handle = await AddressableLoader.LoadAssetAsync<GameObject>(address);
 
-            Result = (GameObject)handle.Result;
 
-            if (Result == null)
+            if (handle.Result == null)
                 throw new System.ArgumentNullException("Result", $"Couldn't find view at address - " +
                     $"{address}");
+
+            result = (GameObject)handle.Result;
 
             instantiatedObject = Instantiate();
             OnResultInstantiated?.Invoke(this); // invoke related event

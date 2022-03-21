@@ -82,6 +82,26 @@ namespace UnityMVC
             return (hasEntry, assetEntry);
         }
 
+        public static List<AddressableAssetEntry> GetAllEntriesInAllGroups(AddressableAssetSettings settings = null)
+        {
+            List<AddressableAssetEntry> entries = new List<AddressableAssetEntry>();
+
+            settings = settings ?? GetDefaultSettings();
+
+            if (settings == null)
+            {
+                Debug.LogError("Default settings of Addressabale not found. Maybe it was not created or not assigned.");
+                return null;
+            }
+
+            var groups = settings.groups;
+
+            foreach (var group in groups)
+                entries.AddRange(group.entries);
+
+            return entries;
+        }
+
         public static bool ChangeEntryGroup(AddressableAssetEntry entry, AddressableAssetGroup group)
         {
             if (entry == null || group == null)

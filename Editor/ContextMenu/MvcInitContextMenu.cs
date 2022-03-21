@@ -27,7 +27,7 @@ namespace UnityMVC.Editor
             var canvas = Object.FindObjectOfType<Canvas>(true);
             
             if (canvas != null)
-                initializer.rootCanvas = canvas;
+                initializer.root = canvas.gameObject;
 
             Undo.RegisterCreatedObjectUndo(go, "Created MvcInitializer");
         }

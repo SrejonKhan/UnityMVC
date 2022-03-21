@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Reflection;
 using System.Linq;
 using UnityMVC.Utils;
+using UnityEngine.AddressableAssets;
 
 namespace UnityMVC
 {
@@ -11,20 +12,27 @@ namespace UnityMVC
         private static GameObject mvcContainer;
         public static GameObject MvcContainer { get => mvcContainer; }
 
-        private static Canvas rootCanvas;
-        public static Canvas RootCanvas { get => rootCanvas; }
+        private static GameObject root;
+        public static GameObject Root { get => root; internal set => root = value; }
 
         /// <summary>
         /// Initialize Method
         /// </summary>
         /// <param name="container">Container for Mvc Controller classes</param>
         /// <param name="canvas">Root Canvas of Game</param>
-        public static void Init(GameObject container, Canvas canvas)
+        public static void Init(GameObject container, GameObject rootGo, AssetReference layout, bool makeLayoutRoot)
         {
             mvcContainer = container;
-            rootCanvas = canvas;
+            root = rootGo;
+
+            if (!root)
+                throw new System.NullReferenceException("MVC Root cannot be null.");
+
+
+            LayoutLoader.Load(layout, makeLayoutRoot);
 
             MvcReflection.InitCache();
+            Debug.Log(root.gameObject.name);
         }
 
         /// <summary>
