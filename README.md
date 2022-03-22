@@ -1,5 +1,4 @@
 # UnityMVC
-***THIS README IS FAIRLY INCOMPLETE, PLEASE WATCH FOR COMPLETE DOCUMENTATION.***
 
 UnityMVC is a library for MVC Pattern, which is almost behave like ASP.NET MVC. This library is intentionally made to work mostly with User Interface management, but possible to work on other scenerio.
  
@@ -229,6 +228,7 @@ mvcInitializer.onLayoutInstantiated.AddListener(go =>
 });
 ```  
 # Creating a Main Menu with MVC
+***THIS PART IS INCOMPLETE, PLEASE WATCH FOR COMPLETE DOCUMENTATION.***
 ## Goal
 Make a main menu with UnityMVC.
 ## Create UI
