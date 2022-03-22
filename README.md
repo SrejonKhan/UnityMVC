@@ -216,6 +216,18 @@ Layout options in `MvcInitializer.cs` -
 Layout Demo - 
 
 ![LayoutDemo.gif](https://i.imgur.com/m7TTHTA.gif)
+
+#### OnLayoutInstantiated
+This event is fired when Layout is instantiated in Root. We can take advantage of it in many way. 
+
+For example, setting Root transform to Layout's container after instantiation -
+```csharp
+mvcInitializer.onLayoutInstantiated.AddListener(go =>
+{
+    // set root to instantiated layout's container
+    MVC.Root = go.transform.GetChild(1).gameObject; 
+});
+```  
 # Creating a Main Menu with MVC
 ## Goal
 Make a main menu with UnityMVC.
