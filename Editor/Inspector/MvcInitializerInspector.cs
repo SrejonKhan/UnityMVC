@@ -11,7 +11,6 @@ namespace UnityMVC.Editor
     public class MvcInitializerInspector : UnityEditor.Editor
     {
         private MvcInitializer mvcInitializer;
-        private int selectedLayout = 0;
 
         public override void OnInspectorGUI()
         {
@@ -19,19 +18,10 @@ namespace UnityMVC.Editor
 
             base.OnInspectorGUI();
 
-            var entries = AddressableEditor.GetAllEntriesInAllGroups();
-            var availableLayout = entries.Where(e => e.address.Split('/')[0] == "Layout").ToArray();
-            var availableLayoutAddresses = availableLayout.Select(l => l.address.Split('/')[1]).ToList();
-            availableLayoutAddresses.Insert(0, "None");
-
-            selectedLayout = EditorGUILayout.Popup("Layout", selectedLayout, availableLayoutAddresses.ToArray());
-
-            mvcInitializer.layout = (selectedLayout == 0)
-                ? null 
-                : new AssetReference(availableLayout[selectedLayout - 1].guid);
-
-            if(mvcInitializer.layout != null)
+            if (mvcInitializer.layout != null)
+            {
                 mvcInitializer.makeLayoutRoot = EditorGUILayout.Toggle("Make Layout Root of Views?", mvcInitializer.makeLayoutRoot);
+            }
         }
     }
 }

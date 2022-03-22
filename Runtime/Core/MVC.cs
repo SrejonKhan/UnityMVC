@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Linq;
 using UnityMVC.Utils;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 
 namespace UnityMVC
 {
@@ -13,14 +14,15 @@ namespace UnityMVC
         public static GameObject MvcContainer { get => mvcContainer; }
 
         private static GameObject root;
-        public static GameObject Root { get => root; internal set => root = value; }
+        public static GameObject Root { get => root; set => root = value; }
 
         /// <summary>
         /// Initialize Method
         /// </summary>
         /// <param name="container">Container for Mvc Controller classes</param>
         /// <param name="canvas">Root Canvas of Game</param>
-        public static void Init(GameObject container, GameObject rootGo, AssetReference layout, bool makeLayoutRoot)
+        public static void Init(GameObject container, GameObject rootGo, 
+            GameObject layout, bool makeLayoutRoot, UnityEvent<GameObject> onLayoutIntialized)
         {
             mvcContainer = container;
             root = rootGo;
@@ -28,20 +30,32 @@ namespace UnityMVC
             if (!root)
                 throw new System.NullReferenceException("MVC Root cannot be null.");
 
+            // load layout
+            LayoutLoader.Load(layout, root.transform, makeLayoutRoot, onLayoutIntialized);
 
-            LayoutLoader.Load(layout, makeLayoutRoot);
-
+            // cache all MonoControllers and ViewClasses
             MvcReflection.InitCache();
-            Debug.Log(root.gameObject.name);
         }
 
         /// <summary>
-        /// Get Result of valid route
+        /// Instantiate View of valid route
         /// </summary>
         /// <param name="routeUrl">Route to view, e.g - Controller/Action/{data}</param>
         public static ActionResult Navigate(string routeUrl, params object[] args)
         {
-            return Route.Navigate(routeUrl, args);
+            return Route.Navigate(routeUrl, false, args);
+        }
+
+        /// <summary>
+        /// Instantiate View of valid route
+        /// </summary>
+        /// <param name="routeUrl">Route to view, e.g - Controller/Action/{data}</param>
+        /// <param name="partialView">True if partial</param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static ActionResult Navigate(string routeUrl,  bool partialView, params object[] args)
+        {
+            return Route.Navigate(routeUrl, partialView, args);
         }
 
         /// <summary>

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 
 namespace UnityMVC
 {
@@ -9,14 +10,16 @@ namespace UnityMVC
     {
         public GameObject root;
 
+        public GameObject layout;
         [HideInInspector]
-        public AssetReference layout;
+        public bool makeLayoutRoot = true;
         [HideInInspector]
-        public bool makeLayoutRoot = true; 
+        public UnityEvent<GameObject> onLayoutInstantiated; 
+
 
         private void Awake()
         {
-            MVC.Init(gameObject, root, layout, makeLayoutRoot);
+            MVC.Init(gameObject, root, layout, makeLayoutRoot, onLayoutInstantiated);
         }
     }
 }

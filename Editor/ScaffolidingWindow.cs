@@ -74,9 +74,6 @@ namespace UnityMVC.Editor
             // divider
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-
-            GUILayout.Label("Register Layout", EditorStyles.boldLabel);
-            HandleLayoutRegistration();
         }
 
         private void GetControllers()
@@ -404,104 +401,6 @@ public class CLASS_NAME : ViewContainer
                 // create a entry
                 if (GUILayout.Button("Register"))
                     AddressableEditor.CreateEntry(viewPrefab, group, expectedAddress);
-            }
-        }
-
-        private void HandleLayoutRegistration()
-        {
-            layoutPrefab = EditorGUILayout.ObjectField("Layout Prefab", layoutPrefab, typeof(GameObject), false);
-
-            if (layoutPrefab == null) return;
-
-            layoutName = layoutPrefab.name;
-
-            if (string.IsNullOrEmpty(layoutName))
-            {
-                EditorGUILayout.HelpBox($"Empty Layout Prefab name is not acceptable.", MessageType.Error);
-                return;
-            }
-
-            ReadOnlyTextField("Layout Name", layoutName);
-
-            string expectedAddress = $"Layout/{layoutName}";
-
-            // check in addressable if view prefeb is registered correctly
-            var group = AddressableEditor.GetOrCreateGroup(MvcSettings.Instance.groupName);
-
-            var (hasLayoutEntry, layoutEntry) = AddressableEditor.CheckAssetEntry(layoutPrefab, group); // mvc group
-
-            var (hasLayoutEntryOther, layoutEntryOther) = AddressableEditor.ChechAssetEntryInAllGroups(layoutPrefab); // all group
-
-            // exist in different group, not mvc (incorrect group)
-            if (hasLayoutEntryOther && !hasLayoutEntry)
-            {
-                if (layoutEntryOther.address.Split('/')[0] == "Layout")
-                {
-                    EditorGUILayout.HelpBox($"Layout Prefab is Registered in different group - {layoutEntryOther.address}. " +
-                    $"Correct address for this selection is {expectedAddress} in {MvcSettings.Instance.groupName} Group.",
-                    MessageType.Error);
-                }
-                else
-                {
-                    EditorGUILayout.HelpBox($"Layout Prefab is Registered as View in different group - " +
-                    $"{layoutEntryOther.address}.",
-                    MessageType.Error);
-
-                    EditorGUILayout.HelpBox("Fix Grouo if you want to proceed further!",
-                    MessageType.Warning);
-                }
-                //fix Group
-                if (GUILayout.Button("Fix Group"))
-                    AddressableEditor.ChangeEntryGroup(layoutEntryOther, group);
-            }
-
-            // correct group
-            if (hasLayoutEntry)
-            {
-                bool isCorrectAddress = IsCorrectAddress(expectedAddress, layoutEntry.address);
-
-                // wrong address or allocation
-                if (!isCorrectAddress)
-                {
-                    // incorrent address but layout
-                    if (layoutEntryOther.address.Split('/')[0] == "Layout")
-                    {
-                        EditorGUILayout.HelpBox($"Layout is already Registered, but in different address - {layoutEntry.address}. " +
-                        $"Correct address for this selection is {expectedAddress}.",
-                        MessageType.Warning);
-                    }
-                    // registered as View
-                    else
-                    {
-                        EditorGUILayout.HelpBox($"This prefab is already registered as a View - {layoutEntry.address}. " +
-                        $"Correct address for this selection is {expectedAddress}.",
-                        MessageType.Warning);
-
-                        EditorGUILayout.HelpBox("Fixing Address will remove it from View Prefab registration!",
-                            MessageType.Warning);
-                    }
-
-                    //fix address
-                    if (GUILayout.Button("Fix Address"))
-                        AddressableEditor.ChangeEntryAddress(layoutEntry, expectedAddress);
-                }
-                // correct address and group
-                else
-                {
-                    EditorGUILayout.HelpBox($"Layout Prefab is already Registered in correct address - {layoutEntry.address}.",
-                    MessageType.Info);
-
-                    // remove entry 
-                    if (GUILayout.Button("Remove Entry"))
-                        AddressableEditor.RemoveEntry(layoutEntry);
-                }
-            }
-            // entry not found anywhere, register
-            else if (!hasLayoutEntryOther)
-            {
-                // create a entry
-                if (GUILayout.Button("Register"))
-                    AddressableEditor.CreateEntry(layoutPrefab, group, expectedAddress);
             }
         }
     }

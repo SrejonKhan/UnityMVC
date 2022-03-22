@@ -2,38 +2,36 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Events;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace UnityMVC
 {
     internal class LayoutLoader
     {
-        private static AsyncOperationHandle handle;
-
-        internal static IEnumerator Load(AssetReference layout, bool makeLayoutRoot)
+        /// <summary>
+        /// Load Layout of MVC
+        /// </summary>
+        /// <param name="layout"></param>
+        /// <param name="root"></param>
+        /// <param name="makeLayoutRoot"></param>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        internal static void Load(GameObject layout, Transform root, bool makeLayoutRoot, UnityEvent<GameObject> onInstantiate)
         {
             if (layout == null)
-                yield break;
-
-            handle = layout.LoadAssetAsync<GameObject>();
-
-            yield return handle;
-
-            if (handle.Result == null)
-                throw new System.ArgumentNullException("Result", $"Couldn't find view.");
+                return;
 
             GameObject go = null;
 
-            if (!MVC.Root)
-                throw new System.ArgumentNullException("MVC Root", "Root can't be null");
+            if (!root)
+                throw new System.ArgumentNullException("Root", "Root can't be null");
 
-            go = Object.Instantiate((GameObject)handle.Result, MVC.Root.transform);
+            go = Object.Instantiate(layout, root);
 
             if (makeLayoutRoot)
                 MVC.Root = go;
 
-            Debug.Log(MVC.Root.gameObject.name);
+            onInstantiate?.Invoke(go);
         }
-
     }
 }

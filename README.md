@@ -58,6 +58,8 @@ If there is any Model for that particular view has been passed as argument in `V
 
 As the final step, UnityMVC invoke all methods in View Class, that has [InvokeAttribute](#invokeattribute) placed on them. 
 
+For **Partial View**, it is mostly same. In **Partial View**, view is not pushed to **History** and no Active View is being destoyed.  
+
 ## Controller
 All Controller class should derives from `MonoController`. On the other hand, `MonoController` derives from `MonoBehaviour`, which let `MonoController`'s derived class (Controllers) to be added to GameObject as Component and receive Unity messages (Awake, Start, Update, FixedUpdate). 
 
@@ -163,6 +165,22 @@ public class MenuSettingsView : ViewContainer
 
 }
 ```
+### Partial View
+Partial View is same as View. Actual difference is in invoking `MVC.Navigate()`. To load any view as Partial View - 
+```csharp
+MVC.Navigate("Alert/Warning", true, someData); // 2nd param indicate it is a Partial View
+
+// Normally loading View
+// It will be pushed to History,
+// so it can be navigate back
+MVC.Navigate("Alert/Warning", someData); 
+```
+![PartiaView.gif](https://i.imgur.com/QmtrR06.gif)
+
+#### Remarks for Partial View - 
+1. PartialView doesn't destroy Active View. It just instantiate on top of that.
+2. PartialView doesn't get pushed to History. So it can't be navigate back or forward.
+3. PartialView is normal View. Scaffolding works same way as normal View. 
 ## Model
 Model is a simple C# class, without any base class or any convention. Model is responsible for holding data, not any other responsibility. Model object can be passed in `View(model)` from Action, then it will be injected into View Class for that corresponding Controller and Action. Later, Model object can be access from View Class's `Model` field. Note that, all view classes are derived from **`ViewContainer`** base class, and `ViewContainer` has a object field of `Model`. So any particual View Class doesn't need to explicitly declare field for `Model`. 
 Example - 
@@ -188,6 +206,16 @@ Features:
 2. Register View Prefab to Addressable
 3. Error check (if View Prefab is registered to wrong address).
 
+## Layout
+Layout Prefab is instantiate when MVC Initialize. Layout is not pushed to History. 
+
+Layout options in `MvcInitializer.cs` -
+
+![LayoutMvcInit.gif](https://i.imgur.com/9KUtp1u.png)
+
+Layout Demo - 
+
+![LayoutDemo.gif](https://i.imgur.com/m7TTHTA.gif)
 # Creating a Main Menu with MVC
 ## Goal
 Make a main menu with UnityMVC.
@@ -202,6 +230,8 @@ Make a main menu with UnityMVC.
 ```csharp
 public static ActionResult Navigate(string routeUrl);
 public static ActionResult Navigate(string routeUrl, params object[] args);
+public static ActionResult Navigate(string routeUrl, bool partialView);
+public static ActionResult Navigate(string routeUrl, bool partialView, params object[] args);
 public static void NavigateBackward(int steps);
 public static void NavigateForward(int steps);
 

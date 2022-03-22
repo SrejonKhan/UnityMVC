@@ -19,9 +19,9 @@ namespace UnityMVC
         /// Get Result of valid route
         /// </summary>
         /// <param name="routeUrl">Route to view, e.g - Controller/Action/{data}</param>
-        internal static ActionResult Navigate(string routeUrl, params object[] args)
+        internal static ActionResult Navigate(string routeUrl, bool partialView = false, params object[] args)
         {
-            return ExecuteNavigation(routeUrl, args);
+            return ExecuteNavigation(routeUrl, partialView, args);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace UnityMVC
             if (historyParams.ContainsKey(routeUrl))
                 args = historyParams[routeUrl];
 
-            ExecuteNavigation(routeUrl, args);
+            ExecuteNavigation(routeUrl, false, args);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace UnityMVC
             if (historyParams.ContainsKey(routeUrl))
                 args = historyParams[routeUrl];
 
-            ExecuteNavigation(routeUrl, args);
+            ExecuteNavigation(routeUrl, false, args);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace UnityMVC
         /// <returns>View as ActionResult object</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private static ActionResult ExecuteNavigation(string routeUrl, params object[] args)
+        private static ActionResult ExecuteNavigation(string routeUrl, bool partialView = false, params object[] args)
         {
             // sanity checks
             if (string.IsNullOrEmpty(routeUrl))
@@ -134,9 +134,12 @@ namespace UnityMVC
 
             // invoke action method
             result = (ActionResult)actionMethod.Invoke(controllerInstance, actionMethodParams.ToArray());
-            result.OnResultInstantiated += OnViewInstantiated;
+            if(!partialView) result.OnResultInstantiated += OnViewInstantiated;
 
             result.RouteUrl = routeUrl;
+
+            // no need to keep history if it's partial
+            if(partialView) return result; 
 
             // add params to history
             if (historyParams.ContainsKey(routeUrl))
