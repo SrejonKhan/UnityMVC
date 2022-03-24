@@ -310,3 +310,11 @@ public class HomeIndexView : ViewContainer
     }
 }
 ```
+
+# Zenject Support
+UnityMVC doesn't implement Zenject in Core, as dynamic instantiation is different in Zenject. Rather than changing, there is a handly workaround. 
+1. Clone [this repo](https://github.com/legionwfz/Zenject-DynamicObjectInjection/tree/master/UnityProject/Assets/Plugins/ZenjectDynamicObjectInjection/Source)
+2. Copy `ZenjectDynamicObjectInjection.cs` and `ZenjectLocator.cs` to your project. 
+3. Add `using System.Linq;` as directive at the top of `ZenjectDynamicObjectInjection.cs` file. 
+4. In each view prefab, which corresponding ViewClass implement zenject, add `ZenjectDynamicObjectInjection.cs` to it. 
+5. Done.
