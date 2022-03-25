@@ -9,17 +9,17 @@ namespace UnityMVC
         private object model;
         public object Model { get { return model; } set => model = value; }
 
-        public void Navigate(string routeUrl)
+        public virtual void Navigate(string routeUrl)
         {
             MVC.Navigate(routeUrl);
         }
 
-        public void NavigateBack()
+        public virtual void NavigateBack()
         {
             MVC.NavigateBackward(1);
         }
 
-        public void NavigateForward()
+        public virtual void NavigateForward()
         {
             MVC.NavigateForward(1);
         }
