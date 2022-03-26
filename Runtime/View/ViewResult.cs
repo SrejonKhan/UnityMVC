@@ -47,35 +47,47 @@ namespace UnityMVC
 
         public override async Task ExecuteResultAsync()
         {
+            base.OnResultInstantiated += OnViewInstantiate;
+
             // get result
             await base.ExecuteResultAsync();
+        }
 
-            if (Result == null || model == null) return;
+        private void OnViewInstantiate(ActionResult view)
+        {
+            base.OnResultInstantiated -= OnViewInstantiate;
 
-            GameObject resultGo = (GameObject)Result;
+            if (Result == null || model == null || view.InstantiatedObject == null) 
+                return;
+
+            GameObject resultGo = view.InstantiatedObject; // instantitated view, not prefab 
+
             System.Type viewType = MvcReflection.GetViewType(controllerName, viewName);
 
             if (viewType == null)
                 throw new System.NullReferenceException($"No View class found for {viewName}.");
 
             // get or add view container (viewType)
-            ViewContainer viewContainer = (ViewContainer)resultGo.GetComponent(viewType) 
+            ViewContainer viewContainer = (ViewContainer)resultGo.GetComponent(viewType)
                 ?? (ViewContainer)resultGo.AddComponent(viewType);
 
             // set model
             if (model != null)
                 viewContainer.Model = model;
 
-            // invoke all methods with "Invoke" attributes
-            var flags = (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            /*---------------------INVOKE [INVOKE] ATTRIBUTES---------------------------*/
+            var flags = (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | 
+                BindingFlags.Static | BindingFlags.DeclaredOnly); // flags for derived class method only
 
+            // get all methods that implement [Invoke] Attribute
             MethodInfo[] invokableMethods = viewType.GetMethods(flags).
                 Where(m => m.GetCustomAttributes(typeof(InvokeAttribute), false).Length > 0).
                 ToArray();
 
+            // invoke methods
             for (int i = 0; i < invokableMethods.Length; i++)
             {
-                invokableMethods[i].Invoke(viewContainer, null);
+                invokableMethods[i].Invoke(viewContainer, null); // no params are passed!
             }
         }
     }
