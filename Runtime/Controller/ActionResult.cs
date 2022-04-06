@@ -20,7 +20,7 @@ namespace UnityMVC
         public AsyncOperationHandle Handle { get => handle; }
 
         private GameObject instantiatedObject;
-        internal GameObject InstantiatedObject { get => instantiatedObject; }
+        public GameObject InstantiatedObject { get => instantiatedObject; }
 
         internal delegate void ResultInstantiated(ActionResult view);
         internal event ResultInstantiated OnResultInstantiated;
