@@ -22,8 +22,8 @@ namespace UnityMVC
         private GameObject instantiatedObject;
         public GameObject InstantiatedObject { get => instantiatedObject; }
 
-        internal delegate void ResultInstantiated(ActionResult view);
-        internal event ResultInstantiated OnResultInstantiated;
+        public delegate void ResultInstantiated(ActionResult view);
+        public event ResultInstantiated OnResultInstantiated;
 
         private string routeUrl;
         internal string RouteUrl { get => routeUrl; set => routeUrl = value; }
