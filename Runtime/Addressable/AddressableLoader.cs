@@ -18,6 +18,13 @@ namespace UnityMVC
             return handle;
         }
 
+        public static T LoadAsset<T>(string address) where T : Object
+        {
+            AsyncOperationHandle<T> handle = Addressables.LoadAssetAsync<T>(address);
+
+            return handle.WaitForCompletion();
+        }
+
         public static void ReleaseHandle(AsyncOperationHandle handle)
         {
             Addressables.Release(handle);

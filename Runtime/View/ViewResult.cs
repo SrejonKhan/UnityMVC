@@ -57,7 +57,7 @@ namespace UnityMVC
         {
             base.OnResultInstantiated -= OnViewInstantiate;
 
-            if (Result == null || model == null || view.InstantiatedObject == null) 
+            if (Result == null || view.InstantiatedObject == null) 
                 return;
 
             GameObject resultGo = view.InstantiatedObject; // instantitated view, not prefab 

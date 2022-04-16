@@ -32,15 +32,24 @@ namespace UnityMVC
         {
             string address = GetAddress();
 
+            // Asynchronous for non WebGl platform
+            // Synchronous for WebGL as it doesn't support multithreading
+#if !UNITY_WEBGL
             handle = await AddressableLoader.LoadAssetAsync<GameObject>(address);
-
 
             if (handle.Result == null)
                 throw new System.ArgumentNullException("Result", $"Couldn't find view at address - " +
                     $"{address}");
 
             result = (GameObject)handle.Result;
+#else
+            result = AddressableLoader.LoadAsset<GameObject>(address);
 
+            if (result == null)
+                throw new System.ArgumentNullException("Result", $"Couldn't find view at address - " +
+                    $"{address}");
+
+#endif
             instantiatedObject = Instantiate();
             OnResultInstantiated?.Invoke(this); // invoke related event
         }

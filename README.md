@@ -13,7 +13,7 @@ MVC (Model-View-Controller) is a widely used Software Design Pattern. It is comm
 
 As name suggests, there is 3 main components in MVC. They are - 
 #### Model
-Model represents an object that contains data. It contains no logic describing how to present or process data. It just contains data/
+Model represents an object that contains data. It contains no logic describing how to present or process data. It just contains data.
 #### View
 View is the representation of Model's data, aka User Interface. View knows how to access Model's data.
 #### Controller

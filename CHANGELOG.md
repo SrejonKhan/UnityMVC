@@ -1,3 +1,13 @@
+# [0.2.1] - 17-04-2022
+WebGl Support. 
+
+### Added 
+- WebGL Support
+- Synchronous Addressable Loading
+
+### Changed
+- Addressable dependency version changed to `1.17.6-preview`.
+
 # [0.2.0] - 23-03-2022
 Improvements, fixes and missing features added.
 

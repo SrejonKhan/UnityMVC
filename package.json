@@ -1,22 +1,22 @@
 {
-    "name": "com.srejonkhan.unity-mvc",
-    "version": "0.2.0",
-    "displayName": "Unity MVC",
-    "description": "UnityMVC is a library for MVC Pattern, which is almost behave like ASP.NET MVC. This library is intentionally made to work mostly with User Interface management, but possible to work on other scenerio.",
-    "unity": "2018.3",
-    "documentationUrl": "https://github.com/SrejonKhan/UnityMVC",
-    "changelogUrl": "https://github.com/SrejonKhan/UnityMVC/CHANGELOG.md",
-    "licensesUrl": "https://github.com/SrejonKhan/UnityMVC/LICENCE.md",
-    "dependencies": {
-        "com.unity.addressables": "1.16.19"
-    },
-    "keywords": [
-        "MVC",
-        "Unity"
-    ],
-    "author": {
-        "name": "Srejon Khan",
-        "email": "srejonkhan9@gmail.com",
-        "url": "https://srejonkhan.github.io/"
-    }
+  "name": "com.srejonkhan.unity-mvc",
+  "version": "0.2.1",
+  "displayName": "Unity MVC",
+  "description": "UnityMVC is a library for MVC Pattern, which is almost behave like ASP.NET MVC. This library is intentionally made to work mostly with User Interface management, but possible to work on other scenerio.",
+  "unity": "2018.3",
+  "documentationUrl": "https://github.com/SrejonKhan/UnityMVC",
+  "changelogUrl": "https://github.com/SrejonKhan/UnityMVC/CHANGELOG.md",
+  "licensesUrl": "https://github.com/SrejonKhan/UnityMVC/LICENCE.md",
+  "dependencies": {
+    "com.unity.addressables": "1.17.6-preview"
+  },
+  "keywords": [
+    "MVC",
+    "Unity"
+  ],
+  "author": {
+    "name": "Srejon Khan",
+    "email": "srejonkhan9@gmail.com",
+    "url": "https://srejonkhan.github.io/"
+  }
 }

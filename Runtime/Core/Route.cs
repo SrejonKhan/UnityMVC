@@ -134,7 +134,12 @@ namespace UnityMVC
 
             // invoke action method
             result = (ActionResult)actionMethod.Invoke(controllerInstance, actionMethodParams.ToArray());
+
+#if !UNITY_WEBGL
             if(!partialView) result.OnResultInstantiated += OnViewInstantiated;
+#else
+            if (!partialView) OnViewInstantiated(result); // synchronous call
+#endif
 
             result.RouteUrl = routeUrl;
 
