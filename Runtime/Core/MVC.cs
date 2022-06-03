@@ -75,5 +75,23 @@ namespace UnityMVC
         {
             Route.NavigateForward(steps);
         }
+
+        /// <summary>
+        /// Get History of all Navigate() call
+        /// </summary>
+        /// <returns>View (ActionResult) Array</returns>
+        public static ActionResult[] GetHistory()
+        {
+            return Route.GetHistory();
+        }
+
+        /// <summary>
+        /// Get Last History
+        /// </summary>
+        /// <returns>View (ActionResult)</returns>
+        public static ActionResult GetLastHistory()
+        {
+            return Route.GetLastHistory();
+        }
     }
 }

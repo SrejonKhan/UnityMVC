@@ -201,5 +201,25 @@ namespace UnityMVC
             history.Add(next);
             currentHistIndex++;
         }
+
+        /// <summary>
+        /// Get History
+        /// </summary>
+        /// <returns>Views Array</returns>
+        internal static ActionResult[] GetHistory()
+        {
+            return history.ToArray();
+        }
+
+        /// <summary>
+        /// Get Last History
+        /// </summary>
+        /// <returns>View</returns>
+        internal static ActionResult GetLastHistory()
+        {
+            if(history.Count == 0) return null;
+
+            return history[history.Count - 1];
+        }
     }
 }

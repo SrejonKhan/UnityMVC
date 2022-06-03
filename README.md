@@ -265,13 +265,17 @@ public ViewResult View(Transform parent, object model, string viewName);
 public UnityEngine.Object Result;
 public Transform Parent;
 ```
-### View Container
+### ViewContainer
 ```csharp
 public object Model;
 // Handy method for UI OnClick
 public void Navigate(string routeUrl);
 public void NavigateBack();
 public void NavigateForward();
+```
+### ViewResult
+```csharp
+public void Refresh();
 ```
 # Conventional Based Routing
 Navigations are done by conventional based routing. Each routeUrl defines something, that makes whole MVC to work perfect. Following is a general route url - 
@@ -309,6 +313,49 @@ public class HomeIndexView : ViewContainer
         Debug.Log(((Home)Model).homeIdentifier);
     }
 }
+```
+
+# OnReloadAttribute
+OnReloadAttribute is an attribute to mark methods in View Class to be invoked when `ViewResult.Refresh()` is invoked. 
+
+```csharp
+using UnityEngine;
+using UnityMVC;
+
+public class HomeIndexView : ViewContainer
+{ 
+    [OnRefresh]
+    void UpdateData()
+    {
+        // server calls 
+        // ...
+        // ...
+        Debug.Log("Data Updated");
+    }
+}
+```
+### How to invoke `Refresh()` on any View
+Reference of `ViewResult` is required to call `Refresh()` for specific view. Reference can be obtained from different sources - 
+- Upon calling `MVC.Navigate()`.*
+- From reference of View Class. (View Class derives from ViewContainer, which has a property of `ViewResult`).
+- `MVC.GetLastHistory()`*    
+
+*These method returns `ActionResult` which should be casted to `ViewResult`. 
+
+Example - 
+```csharp
+// Keeping reference of ActionResult from MVC.Navigate()
+var viewResult = (ViewResult)MVC.Navigate("Home/Index");
+... 
+viewResult.Refresh();
+
+// From reference of view class 
+HomeIndexView homeIndexView = /*Assuming we get a reference*/; 
+homeIndexView.ViewResult.Refresh();
+
+// MVC.GetLastHistory()
+var lastView = (ViewResult)MVC.GetLastHistory();
+lastView.Refresh();
 ```
 
 # Zenject Support

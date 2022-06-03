@@ -1,6 +1,6 @@
 {
   "name": "com.srejonkhan.unity-mvc",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "displayName": "Unity MVC",
   "description": "UnityMVC is a library for MVC Pattern, which is almost behave like ASP.NET MVC. This library is intentionally made to work mostly with User Interface management, but possible to work on other scenerio.",
   "unity": "2018.3",

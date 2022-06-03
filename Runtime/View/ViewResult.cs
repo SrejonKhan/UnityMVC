@@ -8,6 +8,8 @@ namespace UnityMVC
     public class ViewResult : ActionResult
     {
         private object model;
+        private System.Type viewType;
+        private ViewContainer viewContainer;
 
         public ViewResult(string controllerName, string viewName = null)
         {
@@ -62,18 +64,21 @@ namespace UnityMVC
 
             GameObject resultGo = view.InstantiatedObject; // instantitated view, not prefab 
 
-            System.Type viewType = MvcReflection.GetViewType(controllerName, viewName);
+            viewType = MvcReflection.GetViewType(controllerName, viewName);
 
             if (viewType == null)
                 throw new System.NullReferenceException($"No View class found for {viewName}.");
 
             // get or add view container (viewType)
-            ViewContainer viewContainer = (ViewContainer)resultGo.GetComponent(viewType)
+            viewContainer = (ViewContainer)resultGo.GetComponent(viewType)
                 ?? (ViewContainer)resultGo.AddComponent(viewType);
 
             // set model
             if (model != null)
                 viewContainer.Model = model;
+
+            // set view result
+            viewContainer.ViewResult = this;
 
             /*---------------------INVOKE [INVOKE] ATTRIBUTES---------------------------*/
             var flags = (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | 
@@ -82,6 +87,25 @@ namespace UnityMVC
             // get all methods that implement [Invoke] Attribute
             MethodInfo[] invokableMethods = viewType.GetMethods(flags).
                 Where(m => m.GetCustomAttributes(typeof(InvokeAttribute), false).Length > 0).
+                ToArray();
+
+            // invoke methods
+            for (int i = 0; i < invokableMethods.Length; i++)
+            {
+                invokableMethods[i].Invoke(viewContainer, null); // no params are passed!
+            }
+        }
+
+        public void Refresh()
+        {
+            if (viewType == null || viewContainer == null)
+                return;
+
+            var flags = (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public |
+                BindingFlags.Static | BindingFlags.DeclaredOnly); // flags for derived class method only
+
+            MethodInfo[] invokableMethods = viewType.GetMethods(flags).
+                Where(m => m.GetCustomAttributes(typeof(OnRefreshAttribute), false).Length > 0).
                 ToArray();
 
             // invoke methods

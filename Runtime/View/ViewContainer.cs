@@ -8,6 +8,7 @@ namespace UnityMVC
     {
         private object model;
         public object Model { get { return model; } set => model = value; }
+        public ViewResult ViewResult { get; set; }
 
         public virtual void Navigate(string routeUrl)
         {

@@ -1,3 +1,11 @@
+# [0.2.2] - 04-06-2022
+`Refresh()` feature for Views and some methods in `MVC` class.
+
+### Added
+- `OnRefreshAttribute` to mark methods for Refresh invokes. 
+- `GetHistory()` and `GetLastHistory()` methods in `MVC.cs`
+- `ViewResult` prop in `ViewContainer` / View Classes. 
+
 # [0.2.1] - 17-04-2022
 WebGl Support. 
 
