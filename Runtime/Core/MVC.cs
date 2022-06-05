@@ -18,15 +18,15 @@ namespace UnityMVC
         private static GameObject root;
         public static GameObject Root { get => root; set => root = value; }
 
-        private static Action<ActionResult, ActionType> navigateCallback;
-        public static Action<ActionResult, ActionType> NavigateCallback { get => navigateCallback; set => navigateCallback = value; }
+        public delegate void NavigateEventHandler(ActionResult ctx, ActionType type);
+        public static event NavigateEventHandler OnNavigated;
 
         /// <summary>
         /// Initialize Method
         /// </summary>
         /// <param name="container">Container for Mvc Controller classes</param>
         /// <param name="canvas">Root Canvas of Game</param>
-        public static void Init(GameObject container, GameObject rootGo, 
+        public static void Init(GameObject container, GameObject rootGo,
             GameObject layout, bool makeLayoutRoot, UnityEvent<GameObject> onLayoutIntialized)
         {
             mvcContainer = container;
@@ -58,7 +58,7 @@ namespace UnityMVC
         /// <param name="partialView">True if partial</param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static ActionResult Navigate(string routeUrl,  bool partialView, params object[] args)
+        public static ActionResult Navigate(string routeUrl, bool partialView, params object[] args)
         {
             return Route.Navigate(routeUrl, partialView, args);
         }
@@ -98,5 +98,13 @@ namespace UnityMVC
         {
             return Route.GetLastHistory();
         }
+
+        /// <summary>
+        /// Invoke Event from Internal classes
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="type"></param>
+        internal static void InvokeNavigateEvent(ActionResult ctx, ActionType type) 
+            => OnNavigated?.Invoke(ctx, type);
     }
 }

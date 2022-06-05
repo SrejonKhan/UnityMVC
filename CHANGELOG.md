@@ -1,3 +1,9 @@
+# [0.2.3] - 05-06-2022
+`MVC.OnNavigated` event in `MVC` class.
+
+### Added
+- Navigate Event, that get invoked when `MVC.Navigation` is called.
+
 # [0.2.2] - 04-06-2022
 `Refresh()` feature for Views and some methods in `MVC` class.
 

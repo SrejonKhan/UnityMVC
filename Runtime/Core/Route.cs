@@ -22,7 +22,7 @@ namespace UnityMVC
         internal static ActionResult Navigate(string routeUrl, bool partialView = false, params object[] args)
         {
             var actionResult = ExecuteNavigation(routeUrl, partialView, args);
-            MVC.NavigateCallback?.Invoke(actionResult, partialView ? ActionType.PartialView : ActionType.View);
+            MVC.InvokeNavigateEvent(actionResult, partialView ? ActionType.PartialView : ActionType.View);
             return actionResult;
         }
 
