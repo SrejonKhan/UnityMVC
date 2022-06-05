@@ -121,6 +121,15 @@ namespace UnityMVC
         }
 
         /// <summary>
+        /// Get Current History Index
+        /// </summary>
+        /// <returns>History Index</returns>
+        public static int GetCurrentHistoryIndex()
+        {
+            return Route.GetCurrentHistIndex();
+        }
+
+        /// <summary>
         /// Invoke Event from Internal classes
         /// </summary>
         /// <param name="ctx"></param>

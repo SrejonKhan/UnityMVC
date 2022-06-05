@@ -239,5 +239,14 @@ namespace UnityMVC
             historyParams.Clear();
             currentHistIndex = 0;
         }
+
+        /// <summary>
+        /// Get Current History Index
+        /// </summary>
+        /// <returns>History Index</returns>
+        internal static int GetCurrentHistIndex()
+        {
+            return currentHistIndex;
+        }
     }
 }
