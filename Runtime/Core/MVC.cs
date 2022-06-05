@@ -48,7 +48,7 @@ namespace UnityMVC
         /// <param name="routeUrl">Route to view, e.g - Controller/Action/{data}</param>
         public static ActionResult Navigate(string routeUrl, params object[] args)
         {
-            return Route.Navigate(routeUrl, false, args);
+            return Route.Navigate(routeUrl, false, true, args);
         }
 
         /// <summary>
@@ -60,7 +60,20 @@ namespace UnityMVC
         /// <returns></returns>
         public static ActionResult Navigate(string routeUrl, bool partialView, params object[] args)
         {
-            return Route.Navigate(routeUrl, partialView, args);
+            return Route.Navigate(routeUrl, partialView, true, args);
+        }
+
+        /// <summary>
+        /// Instantiate View of valid route without pushing to history
+        /// </summary>
+        /// <param name="routeUrl">Route to view, e.g - Controller/Action/{data}</param>
+        /// <param name="partialView">True if partial</param>
+        /// <param name="pushToHistory">If push to history</param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static ActionResult Navigate(string routeUrl, bool partialView, bool pushToHistory, params object[] args)
+        {
+            return Route.Navigate(routeUrl, partialView, pushToHistory, args);
         }
 
         /// <summary>
@@ -97,6 +110,14 @@ namespace UnityMVC
         public static ActionResult GetLastHistory()
         {
             return Route.GetLastHistory();
+        }
+
+        /// <summary>
+        /// Clear History (Beta)
+        /// </summary>
+        public static void ClearHistory()
+        {
+            Route.ClearHistory();
         }
 
         /// <summary>

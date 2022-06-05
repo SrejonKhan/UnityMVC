@@ -19,9 +19,9 @@ namespace UnityMVC
         /// Get Result of valid route
         /// </summary>
         /// <param name="routeUrl">Route to view, e.g - Controller/Action/{data}</param>
-        internal static ActionResult Navigate(string routeUrl, bool partialView = false, params object[] args)
+        internal static ActionResult Navigate(string routeUrl, bool partialView, bool pushToHistory, params object[] args)
         {
-            var actionResult = ExecuteNavigation(routeUrl, partialView, args);
+            var actionResult = ExecuteNavigation(routeUrl, partialView, pushToHistory, args);
             MVC.InvokeNavigateEvent(actionResult, partialView ? ActionType.PartialView : ActionType.View);
             return actionResult;
         }
@@ -48,7 +48,7 @@ namespace UnityMVC
             if (historyParams.ContainsKey(routeUrl))
                 args = historyParams[routeUrl];
 
-            ExecuteNavigation(routeUrl, false, args);
+            ExecuteNavigation(routeUrl, false, true, args);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace UnityMVC
             if (historyParams.ContainsKey(routeUrl))
                 args = historyParams[routeUrl];
 
-            ExecuteNavigation(routeUrl, false, args);
+            ExecuteNavigation(routeUrl, false, true, args);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace UnityMVC
         /// <returns>View as ActionResult object</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private static ActionResult ExecuteNavigation(string routeUrl, bool partialView = false, params object[] args)
+        private static ActionResult ExecuteNavigation(string routeUrl, bool partialView, bool pushToHistory, params object[] args)
         {
             // sanity checks
             if (string.IsNullOrEmpty(routeUrl))
@@ -145,8 +145,8 @@ namespace UnityMVC
 
             result.RouteUrl = routeUrl;
 
-            // no need to keep history if it's partial
-            if(partialView) return result; 
+            // no need to keep history if it's partial or directed not to keep
+            if(partialView || !pushToHistory) return result; 
 
             // add params to history
             if (historyParams.ContainsKey(routeUrl))
@@ -222,6 +222,16 @@ namespace UnityMVC
             if(history.Count == 0) return null;
 
             return history[history.Count - 1];
+        }
+
+        /// <summary>
+        /// Clear all history
+        /// </summary>
+        internal static void ClearHistory()
+        {
+            history.Clear();
+            historyParams.Clear();
+            currentHistIndex = 0;
         }
     }
 }
