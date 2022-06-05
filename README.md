@@ -246,9 +246,12 @@ public static ActionResult Navigate(string routeUrl, bool partialView);
 public static ActionResult Navigate(string routeUrl, bool partialView, params object[] args);
 public static void NavigateBackward(int steps);
 public static void NavigateForward(int steps);
+public static ActionResult[] GetHistory();
+public static ActionResult GetLastHistory();
 
 public static GameObject MvcContainer;
 public static Canvas RootCanvas;
+public static Action<ActionResult, ActionType> NavigateCallback;
 ```
 ### MonoController
 Base Class for every Controller Class.
@@ -357,6 +360,20 @@ homeIndexView.ViewResult.Refresh();
 var lastView = (ViewResult)MVC.GetLastHistory();
 lastView.Refresh();
 ```
+
+# `MVC.NavigateCallback`
+`MVC.NavigateCallback` get invoked each time we call `MVC.Navigate()`. It's a way to execute something common. For example - 
+```csharp
+MVC.NavigateCallback += (actionResult, type) =>
+{
+    if (type == ActionType.View)
+        audioSource.PlayOneShot(viewSfx);
+
+    if (type == ActionType.PartialView)
+        audioSource.PlayOneShot(partialViewSfx);
+};
+``` 
+
 
 # Zenject Support
 UnityMVC doesn't implement Zenject in Core, as dynamic instantiation is different in Zenject. Rather than changing, there is a handly workaround. 

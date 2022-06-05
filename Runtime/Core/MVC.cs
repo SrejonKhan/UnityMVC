@@ -5,6 +5,8 @@ using System.Linq;
 using UnityMVC.Utils;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
+using System.Collections.Generic;
+using System;
 
 namespace UnityMVC
 {
@@ -15,6 +17,9 @@ namespace UnityMVC
 
         private static GameObject root;
         public static GameObject Root { get => root; set => root = value; }
+
+        private static Action<ActionResult, ActionType> navigateCallback;
+        public static Action<ActionResult, ActionType> NavigateCallback { get => navigateCallback; set => navigateCallback = value; }
 
         /// <summary>
         /// Initialize Method

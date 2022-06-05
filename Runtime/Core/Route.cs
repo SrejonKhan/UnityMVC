@@ -21,7 +21,9 @@ namespace UnityMVC
         /// <param name="routeUrl">Route to view, e.g - Controller/Action/{data}</param>
         internal static ActionResult Navigate(string routeUrl, bool partialView = false, params object[] args)
         {
-            return ExecuteNavigation(routeUrl, partialView, args);
+            var actionResult = ExecuteNavigation(routeUrl, partialView, args);
+            MVC.NavigateCallback?.Invoke(actionResult, partialView ? ActionType.PartialView : ActionType.View);
+            return actionResult;
         }
 
         /// <summary>
