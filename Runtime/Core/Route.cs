@@ -32,6 +32,9 @@ namespace UnityMVC
         /// <param name="steps">Steps to navigate back</param>
         internal static void NavigateBackward(int steps)
         {
+            if (history.Count == 0)
+                return;
+
             navigateType = NavigateType.Backward;
 
             currentHistIndex = currentHistIndex - steps < 0 ? 0 : currentHistIndex - steps;
@@ -57,6 +60,9 @@ namespace UnityMVC
         /// <param name="steps">Steps to navigate forward</param>
         internal static void NavigateForward(int steps)
         {
+            if (history.Count == 0)
+                return;
+
             navigateType = NavigateType.Forward;
 
             currentHistIndex = currentHistIndex + steps >= history.Count ? history.Count - 1 : currentHistIndex + steps;
