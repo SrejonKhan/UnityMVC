@@ -26,7 +26,7 @@ namespace UnityMVC
         public event ResultInstantiated OnResultInstantiated;
 
         private string routeUrl;
-        internal string RouteUrl { get => routeUrl; set => routeUrl = value; }
+        public string RouteUrl { get => routeUrl; internal set => routeUrl = value; }
 
         public virtual async Task ExecuteResultAsync()
         {
