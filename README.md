@@ -362,7 +362,7 @@ lastView.Refresh();
 ```
 
 # `MVC.OnNavigated`
-`MVC.OnNavigated` get invoked each time we call `MVC.Navigate()`. It's a way to execute something common. For example - 
+`MVC.OnNavigated` get invoked each time we call `MVC.Navigate()` / `MVC.NavigateForward()` / `MVC.NavigateBackward()` . It's a way to execute something common. For example - 
 ```csharp
 MVC.OnNavigated += (ctx, type) =>
 {

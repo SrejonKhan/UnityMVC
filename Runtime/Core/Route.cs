@@ -20,10 +20,8 @@ namespace UnityMVC
         /// </summary>
         /// <param name="routeUrl">Route to view, e.g - Controller/Action/{data}</param>
         internal static ActionResult Navigate(string routeUrl, bool partialView, bool pushToHistory, params object[] args)
-        {
-            var actionResult = ExecuteNavigation(routeUrl, partialView, pushToHistory, args);
-            MVC.InvokeNavigateEvent(actionResult, partialView ? ActionType.PartialView : ActionType.View);
-            return actionResult;
+        { 
+            return ExecuteNavigation(routeUrl, partialView, pushToHistory, args);
         }
 
         /// <summary>
@@ -142,9 +140,9 @@ namespace UnityMVC
 
             // invoke action method
             result = (ActionResult)actionMethod.Invoke(controllerInstance, actionMethodParams.ToArray());
-
+            
 #if !UNITY_WEBGL
-            if(!partialView) result.OnResultInstantiated += OnViewInstantiated;
+            if (!partialView) result.OnResultInstantiated += OnViewInstantiated;
 #else
             if (!partialView) OnViewInstantiated(result); // synchronous call
 #endif
@@ -152,13 +150,21 @@ namespace UnityMVC
             result.RouteUrl = routeUrl;
 
             // no need to keep history if it's partial or directed not to keep
-            if(partialView || !pushToHistory) return result; 
+            if (partialView || !pushToHistory)
+            {
+                // invoke Navigate Event
+                MVC.InvokeNavigateEvent(result, partialView ? ActionType.PartialView : ActionType.View);
+                return result;
+            }
 
             // add params to history
             if (historyParams.ContainsKey(routeUrl))
                 historyParams[routeUrl] = args;
             else
                 historyParams.Add(routeUrl, args);
+
+            // invoke Navigate Event
+            MVC.InvokeNavigateEvent(result, partialView ? ActionType.PartialView : ActionType.View);
 
             return result;
         }
