@@ -28,6 +28,9 @@ namespace UnityMVC
         private string routeUrl;
         public string RouteUrl { get => routeUrl; internal set => routeUrl = value; }
 
+        private bool isFailed;
+        public bool IsFailed { get => isFailed; internal set => isFailed = value; }
+
         public virtual async Task ExecuteResultAsync()
         {
             string address = GetAddress();

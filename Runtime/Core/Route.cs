@@ -96,9 +96,13 @@ namespace UnityMVC
 
             // route data
             string[] routeData = routeUrl.Split('/');
-
             if (routeData.Length < 2)
                 throw new ArgumentException("Invalid route param passed");
+
+            ActionResult result = new PendingViewResult(routeUrl);
+            bool shouldContinue = MVC.InvokeBeforeNavigateEvent(result, partialView ? ActionType.PartialView : ActionType.View);
+
+            if (!shouldContinue) return new FailedViewResult(routeUrl);
 
             string controllerName = routeData[0];
             string actionName = routeData[1];
@@ -136,19 +140,16 @@ namespace UnityMVC
             // add args as param
             actionMethodParams.AddRange(args);
 
-            ActionResult result = null;
-
             // invoke action method
             result = (ActionResult)actionMethod.Invoke(controllerInstance, actionMethodParams.ToArray());
-            
+            if (result == null)
+                return new FailedViewResult(routeUrl);
+
 #if !UNITY_WEBGL
             if (!partialView) result.OnResultInstantiated += OnViewInstantiated;
 #else
             if (!partialView) OnViewInstantiated(result); // synchronous call
 #endif
-
-            result.RouteUrl = routeUrl;
-
             // no need to keep history if it's partial or directed not to keep
             if (partialView || !pushToHistory)
             {

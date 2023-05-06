@@ -20,6 +20,8 @@ namespace UnityMVC
 
         public delegate void NavigateEventHandler(ActionResult ctx, ActionType type);
         public static event NavigateEventHandler OnNavigated;
+        public delegate bool BeforeNavigateEventHandler(ActionResult ctx, ActionType type);
+        public static event BeforeNavigateEventHandler BeforeNavigate;
 
         /// <summary>
         /// Initialize Method
@@ -136,5 +138,13 @@ namespace UnityMVC
         /// <param name="type"></param>
         internal static void InvokeNavigateEvent(ActionResult ctx, ActionType type) 
             => OnNavigated?.Invoke(ctx, type);
+
+        /// <summary>
+        /// Invoke Event from Internal classes
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="type"></param>
+        internal static bool InvokeBeforeNavigateEvent(ActionResult ctx, ActionType type)
+            => BeforeNavigate != null ? BeforeNavigate.Invoke(ctx, type) : false;
     }
 }
