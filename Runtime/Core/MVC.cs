@@ -145,6 +145,6 @@ namespace UnityMVC
         /// <param name="ctx"></param>
         /// <param name="type"></param>
         internal static bool InvokeBeforeNavigateEvent(ActionResult ctx, ActionType type)
-            => BeforeNavigate != null ? BeforeNavigate.Invoke(ctx, type) : false;
+            => BeforeNavigate != null ? BeforeNavigate.Invoke(ctx, type) : true;
     }
 }
