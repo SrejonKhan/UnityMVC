@@ -141,9 +141,12 @@ namespace UnityMVC
             actionMethodParams.AddRange(args);
 
             // invoke action method
+            result = null;
             result = (ActionResult)actionMethod.Invoke(controllerInstance, actionMethodParams.ToArray());
             if (result == null)
                 return new FailedViewResult(routeUrl);
+
+            result.RouteUrl = routeUrl; 
 
 #if !UNITY_WEBGL
             if (!partialView) result.OnResultInstantiated += OnViewInstantiated;
