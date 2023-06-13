@@ -3,7 +3,7 @@
 UnityMVC is a library for MVC Pattern, which is almost behave like ASP.NET MVC. This library is intentionally made to work mostly with User Interface management, but possible to work on other scenerio.
 
 <p align="center">
-    <img src ="https://i.ibb.co/vX19Bbx/optimized-social-banner.png"/>
+    <img src ="https://i.ibb.co/8079VMG/xs-optimized-social-banner.png"/>
 </p>
 
 # Installation
