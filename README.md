@@ -6,6 +6,21 @@ UnityMVC is a library for MVC Pattern, which is almost behave like ASP.NET MVC. 
     <img src ="https://i.ibb.co/8079VMG/xs-optimized-social-banner.png"/>
 </p>
 
+Here are the key features of UnityMVC:
+
+- MVC pattern implementation for user interface management
+- Convention-based routing for navigation between views
+- Support for passing data to controllers and views
+- Automatic loading and instantiation of view prefabs
+- Reflection-based execution of controller actions
+- Support for partial views
+- Middleware support for executing operations before processing routes or instantiating views
+- Navigation Events (`OnNavigated`, `BeforeNavigate`)
+- Layout functionality for handling common UI layouts
+- Easy creation of controller classes using the provided context menu
+- Scaffolding feature for generating view classes and registering view prefabs
+- Zenject (DI Library) Support
+
 # Installation
 
 - Open Package Manager in Unity (Windows/Package Manager).
