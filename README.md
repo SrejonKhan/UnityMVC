@@ -303,9 +303,9 @@ public class HomeIndexView : ViewContainer
 }
 ```
 
-# OnReloadAttribute
+# OnRefresh Attribute
 
-OnReloadAttribute is an attribute to mark methods in View Class to be invoked when `ViewResult.Refresh()` is invoked.
+`OnRefresh` is an attribute to mark methods in View Class to be invoked when `ViewResult.Refresh()` is called.
 
 ```csharp
 using UnityEngine;
