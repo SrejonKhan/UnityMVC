@@ -23,6 +23,8 @@ namespace UnityMVC
         public delegate bool BeforeNavigateEventHandler(ActionResult ctx, ActionType type);
         public static event BeforeNavigateEventHandler BeforeNavigate;
 
+        private static MiddlewareConfiguration middlewareConfiguration;
+
         /// <summary>
         /// Initialize Method
         /// </summary>
@@ -146,5 +148,18 @@ namespace UnityMVC
         /// <param name="type"></param>
         internal static bool InvokeBeforeNavigateEvent(ActionResult ctx, ActionType type)
             => BeforeNavigate != null ? BeforeNavigate.Invoke(ctx, type) : true;
+
+        public static MiddlewareConfiguration ConfigureMiddleware()
+        {
+            if(middlewareConfiguration == null)
+                middlewareConfiguration = new MiddlewareConfiguration();
+
+            return middlewareConfiguration;
+        }
+
+        public static void ClearMiddleware()
+        {
+            middlewareConfiguration = null;
+        }
     }
 }

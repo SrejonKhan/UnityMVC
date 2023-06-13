@@ -284,6 +284,40 @@ mvcInitializer.onLayoutInstantiated.AddListener(go =>
 });
 ```
 
+# Middleware
+
+Middleware functionality allows you to configure middleware to be executed before processing a specific route or view. This middleware can perform checks or operations and determine whether the route should be processed or the view should be instantiated.
+
+To understand how the middleware works, let's take a look at an example configuration:
+
+```csharp
+MVC.ConfigureMiddleware().OnRoute("Menu/Index", (ctx, type) =>
+{
+    if (!User.IsAuthenticated)
+        return false;
+
+    // Perform other necessary operations or checks
+
+    return true;
+});
+```
+
+In this example, we configure middleware for the `Menu/Index` route. The ctx parameter represents the `ActionResult`, which is the result of the view. However, since the middleware is executed before instantiating the view, the ctx in this context is `PendingViewResult`, which contains route url only. It always has a room to improve, but for now, we will stick to this simple implementation.
+
+The type parameter represents the `ActionType` for the requested view. If the view is requested to be instantiated as a partial view, the type will be set to `PartialView`; otherwise, it will be set to `View`.
+
+Within the middleware function, you can perform various checks and operations. In the provided example, we check if the user is authenticated (`User.IsAuthenticated`). If the user is not authenticated, we return `false`, indicating that the middleware should block further processing of the route or view. In such case of cancellation, MVC.Navigate() or other similar navigate method will return FailedViewResult which contains nothing but the Route URL. If the user is authenticated, we can perform any other necessary operations or checks and return `true` to allow the route or view to be processed.
+
+If we want to re-configure middleware from scratch again, we can simply call -
+
+```csharp
+MVC.ClearMiddleware();
+```
+
+By configuring middleware in this manner, we can easily add custom logic or validations before handling specific routes or views within application. This can be particularly useful for implementing authentication checks, authorization rules, or any other pre-processing requirements.
+
+Feel free to explore this feature and leverage its capabilities to enhance your Unity projects and streamline your MVC implementation.
+
 # InvokeAttribute
 
 InvokeAttribute is a special attribute provided by UnityMVC to invoke methods in View Class when that particular view class is instantiated.
@@ -456,6 +490,9 @@ public static ActionResult GetLastHistory();
 public static GameObject MvcContainer;
 public static Canvas RootCanvas;
 public static event NavigateEventHandler OnNavigated;
+
+public static MiddlewareConfiguration ConfigureMiddleware();
+public static void ClearMiddleware();
 ```
 
 ### MonoController
@@ -491,4 +528,13 @@ public void NavigateForward();
 
 ```csharp
 public void Refresh();
+```
+
+### MiddlewareConfiguration
+
+```csharp
+using MiddlewareDelegate = System.Func<UnityMVC.ActionResult, UnityMVC.ActionType, bool>;
+
+public void OnRoute(string route, MiddlewareDelegate callback);
+public void RemoveRouteConfiguration(string route);
 ```

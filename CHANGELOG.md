@@ -1,3 +1,14 @@
+# [0.3.0] - 14-06-2023
+
+New middleware functionality.
+
+### Added
+
+- Middleware functionality for route and view processing.
+  - Introduced the ability to configure middleware for specific routes or views.
+  - Middleware functions can perform checks and operations before processing the route or instantiating the view.
+  - Middleware can be used to add custom logic, validations, or pre-processing requirements.
+
 # [0.2.4] - 06-05-2023
 
 `MVC.BeforeNavigate` event in `MVC` class.

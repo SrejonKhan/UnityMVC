@@ -100,7 +100,20 @@ namespace UnityMVC
                 throw new ArgumentException("Invalid route param passed");
 
             ActionResult result = new PendingViewResult(routeUrl);
-            bool shouldContinue = MVC.InvokeBeforeNavigateEvent(result, partialView ? ActionType.PartialView : ActionType.View);
+            var actionType = partialView ? ActionType.PartialView : ActionType.View;
+
+            // invoke BeforeNavigate event
+            bool shouldContinue = MVC.InvokeBeforeNavigateEvent(result, actionType);
+
+            // invoke middleware
+            var middleware = MVC.ConfigureMiddleware();
+            if (shouldContinue && 
+                middleware.HasMiddlewareRegistered(routeUrl) && 
+                MVC.ConfigureMiddleware().IsMiddlewareValid(routeUrl)
+                )
+            {
+                shouldContinue = MVC.ConfigureMiddleware().InvokeMiddleware(routeUrl, result, actionType);
+            }
 
             if (!shouldContinue) return new FailedViewResult(routeUrl);
 
