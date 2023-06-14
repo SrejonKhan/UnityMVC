@@ -31,6 +31,9 @@ namespace UnityMVC
         private bool isFailed;
         public bool IsFailed { get => isFailed; internal set => isFailed = value; }
 
+        private ActionType navigationActionType;
+        public ActionType NavigationActionType { get => navigationActionType; internal set => navigationActionType = value; }
+
         public virtual async Task ExecuteResultAsync()
         {
             string address = GetAddress();

@@ -156,10 +156,18 @@ namespace UnityMVC
             // invoke action method
             result = null;
             result = (ActionResult)actionMethod.Invoke(controllerInstance, actionMethodParams.ToArray());
-            if (result == null)
-                return new FailedViewResult(routeUrl);
 
-            result.RouteUrl = routeUrl; 
+            bool isActionMethodFailed = false;
+            if (result == null) 
+            {
+                isActionMethodFailed = true;
+                result = new FailedViewResult(routeUrl);
+            }
+
+            result.RouteUrl = routeUrl;
+            result.NavigationActionType = actionType;
+
+            if (isActionMethodFailed) return result;
 
 #if !UNITY_WEBGL
             if (!partialView) result.OnResultInstantiated += OnViewInstantiated;

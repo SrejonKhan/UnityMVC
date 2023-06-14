@@ -512,6 +512,7 @@ public ViewResult View(Transform parent, object model, string viewName);
 ```csharp
 public UnityEngine.Object Result;
 public Transform Parent;
+public ActionType NavigationActionType;
 ```
 
 ### ViewContainer
