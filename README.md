@@ -530,6 +530,7 @@ public void NavigateForward();
 
 ```csharp
 public void Refresh();
+public ViewContainer ViewContainerComponent;
 ```
 
 ### MiddlewareConfiguration

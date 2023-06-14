@@ -9,7 +9,9 @@ namespace UnityMVC
     {
         private object model;
         private System.Type viewType;
-        private ViewContainer viewContainer;
+
+        private ViewContainer viewContainerComponent;
+        public ViewContainer ViewContainerComponent { get => viewContainerComponent; internal set => viewContainerComponent = value; }
 
         public ViewResult(string controllerName, string viewName = null)
         {
@@ -70,15 +72,15 @@ namespace UnityMVC
                 throw new System.NullReferenceException($"No View class found for {viewName}.");
 
             // get or add view container (viewType)
-            viewContainer = (ViewContainer)resultGo.GetComponent(viewType)
+            ViewContainerComponent = (ViewContainer)resultGo.GetComponent(viewType)
                 ?? (ViewContainer)resultGo.AddComponent(viewType);
 
             // set model
             if (model != null)
-                viewContainer.Model = model;
+                ViewContainerComponent.Model = model;
 
             // set view result
-            viewContainer.ViewResult = this;
+            ViewContainerComponent.ViewResult = this;
 
             /*---------------------INVOKE [INVOKE] ATTRIBUTES---------------------------*/
             var flags = (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | 
@@ -92,13 +94,13 @@ namespace UnityMVC
             // invoke methods
             for (int i = 0; i < invokableMethods.Length; i++)
             {
-                invokableMethods[i].Invoke(viewContainer, null); // no params are passed!
+                invokableMethods[i].Invoke(ViewContainerComponent, null); // no params are passed!
             }
         }
 
         public void Refresh()
         {
-            if (viewType == null || viewContainer == null)
+            if (viewType == null || ViewContainerComponent == null)
                 return;
 
             var flags = (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public |
@@ -111,7 +113,7 @@ namespace UnityMVC
             // invoke methods
             for (int i = 0; i < invokableMethods.Length; i++)
             {
-                invokableMethods[i].Invoke(viewContainer, null); // no params are passed!
+                invokableMethods[i].Invoke(ViewContainerComponent, null); // no params are passed!
             }
         }
     }
