@@ -520,6 +520,7 @@ public Transform Parent;
 public object Model;
 // Handy method for UI OnClick
 public void Navigate(string routeUrl);
+public void NavigatePartial(string route);
 public void NavigateBack();
 public void NavigateForward();
 ```

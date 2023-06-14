@@ -15,6 +15,11 @@ namespace UnityMVC
             MVC.Navigate(routeUrl);
         }
 
+        public virtual void NavigatePartial(string route)
+        {
+            MVC.Navigate(route, true);
+        }
+
         public virtual void NavigateBack()
         {
             MVC.NavigateBackward(1);
