@@ -20,6 +20,7 @@ Here are the key features of UnityMVC:
 - Easy creation of controller classes using the provided context menu
 - Scaffolding feature for generating view classes and registering view prefabs
 - Zenject (DI Library) Support
+- Route History Debugger
 
 # Installation
 
@@ -472,6 +473,16 @@ Make a main menu with UnityMVC.
 ## Create View
 
 ## Navigating
+
+# Debugger
+
+### Route History Debugger
+
+Route History Debugger is a useful tool provided by UnityMVC for debugging and visualizing the history of routes in your application. To access the debugger, navigate to `Window/MVC/History Debugger/Route History` in the Unity Editor.
+
+During runtime, the Route History Debugger displays a list of all the routes that have been navigated in your application. The currently active route is highlighted for easy identification. Each row of history in the debugger contains a `details` button that allows you to view additional details about that specific route.
+
+![history_debugger.png](https://i.ibb.co/kqg0G8T/history-debugger.png)
 
 # Reference
 
