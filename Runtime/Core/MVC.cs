@@ -134,6 +134,24 @@ namespace UnityMVC
         }
 
         /// <summary>
+        /// [DO NOT USE TO MODIFY HISTORY] Get History List Reference
+        /// </summary>
+        /// <returns>Action Result List</returns>
+        public static List<ActionResult> DANGEROUS_GetHistoryList()
+        {
+            return Route.DANGEROUS_GetHistoryList();
+        }
+
+        /// <summary>
+        /// [DO NOT USE TO MODIFY HISTORY PARAMs] Get history args reference
+        /// </summary>
+        /// <returns>Dictionary of params</returns>
+        public static Dictionary<string, object[]> DANGEROUS_GetHistoryArgs()
+        {
+            return Route.DANGEROUS_GetHistoryArgs();
+        }
+
+        /// <summary>
         /// Invoke Event from Internal classes
         /// </summary>
         /// <param name="ctx"></param>

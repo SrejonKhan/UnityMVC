@@ -251,6 +251,24 @@ namespace UnityMVC
         }
 
         /// <summary>
+        /// [DO NOT USE TO MODIFY HISTORY] Get History List Reference
+        /// </summary>
+        /// <returns>Action Result List</returns>
+        internal static List<ActionResult> DANGEROUS_GetHistoryList()
+        {
+            return history;
+        }
+
+        /// <summary>
+        /// [DO NOT USE TO MODIFY HISTORY ARGs] Get history args reference
+        /// </summary>
+        /// <returns>Dictionary of args</returns>
+        internal static Dictionary<string, object[]> DANGEROUS_GetHistoryArgs()
+        {
+            return historyArgs;
+        }
+
+        /// <summary>
         /// Get Last History
         /// </summary>
         /// <returns>View</returns>
