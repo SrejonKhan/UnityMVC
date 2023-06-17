@@ -10,7 +10,7 @@ namespace UnityMVC
 
         private static List<ActionResult> history = new List<ActionResult>();
         private static int currentHistIndex = 0;
-        private static Dictionary<string, object[]> historyParams = new Dictionary<string, object[]>();
+        private static Dictionary<string, object[]> historyArgs = new Dictionary<string, object[]>();
 
         private enum NavigateType { None, Forward, Backward };
         private static NavigateType navigateType = NavigateType.None;
@@ -46,8 +46,8 @@ namespace UnityMVC
 
             object[] args = null;
 
-            if (historyParams.ContainsKey(routeUrl))
-                args = historyParams[routeUrl];
+            if (historyArgs.ContainsKey(routeUrl))
+                args = historyArgs[routeUrl];
 
             ExecuteNavigation(routeUrl, false, true, args);
         }
@@ -74,8 +74,8 @@ namespace UnityMVC
 
             object[] args = null;
 
-            if (historyParams.ContainsKey(routeUrl))
-                args = historyParams[routeUrl];
+            if (historyArgs.ContainsKey(routeUrl))
+                args = historyArgs[routeUrl];
 
             ExecuteNavigation(routeUrl, false, true, args);
         }
@@ -182,11 +182,11 @@ namespace UnityMVC
                 return result;
             }
 
-            // add params to history
-            if (historyParams.ContainsKey(routeUrl))
-                historyParams[routeUrl] = args;
+            // add args to history
+            if (historyArgs.ContainsKey(routeUrl))
+                historyArgs[routeUrl] = args;
             else
-                historyParams.Add(routeUrl, args);
+                historyArgs.Add(routeUrl, args);
 
             // invoke Navigate Event
             MVC.InvokeNavigateEvent(result, partialView ? ActionType.PartialView : ActionType.View);
@@ -267,7 +267,7 @@ namespace UnityMVC
         internal static void ClearHistory()
         {
             history.Clear();
-            historyParams.Clear();
+            historyArgs.Clear();
             currentHistIndex = 0;
         }
 
