@@ -286,7 +286,12 @@ namespace UnityMVC
         {
             history.Clear();
             historyArgs.Clear();
-            currentHistIndex = 0;
+
+            // currentHistIndex is set to -1 because in the next navigation
+            // it will be incremented to 0. 
+            // If we set to 0, in next navigation, it will be incremented to 1
+            // where it should be 0 as it's the first fresh navigation. 
+            currentHistIndex = -1; 
         }
 
         /// <summary>
