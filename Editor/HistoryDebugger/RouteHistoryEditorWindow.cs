@@ -81,6 +81,8 @@ namespace UnityMVC.Editor
             DrawTitleLabel("History Debugger");
             DrawSubtitleLabel("Route History");
 
+            GUILayout.Label($"Current History Index = {currentIndex}");
+
             // Display the history stack as a scrollable table
             scrollPosition = EditorGUILayout.BeginScrollView(
                 scrollPosition, 
