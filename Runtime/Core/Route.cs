@@ -308,5 +308,14 @@ namespace UnityMVC
         {
             return currentHistIndex;
         }
+
+        /// <summary>
+        /// Get Current History 
+        /// </summary>
+        /// <returns>ActionResult of current history</returns>
+        internal static ActionResult GetCurrentHist()
+        {
+            return history[currentHistIndex];
+        }
     }
 }

@@ -497,6 +497,8 @@ public static void NavigateBackward(int steps);
 public static void NavigateForward(int steps);
 public static ActionResult[] GetHistory();
 public static ActionResult GetLastHistory();
+public static ActionResult GetCurrentHistoryIndex();
+public static ActionResult GetCurrentHistory();
 
 public static GameObject MvcContainer;
 public static Canvas RootCanvas;

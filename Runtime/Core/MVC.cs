@@ -134,6 +134,15 @@ namespace UnityMVC
         }
 
         /// <summary>
+        /// Get Current History
+        /// </summary>
+        /// <returns>ActionResult of current history </returns>
+        public static ActionResult GetCurrentHistory()
+        {
+            return Route.GetCurrentHist();
+        }
+
+        /// <summary>
         /// [DO NOT USE TO MODIFY HISTORY] Get History List Reference
         /// </summary>
         /// <returns>Action Result List</returns>
