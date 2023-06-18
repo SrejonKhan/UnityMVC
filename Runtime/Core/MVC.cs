@@ -84,18 +84,18 @@ namespace UnityMVC
         /// Navigate backward to history
         /// </summary>
         /// <param name="steps">Steps to navigate back</param>
-        public static void NavigateBackward(int steps)
+        public static ActionResult NavigateBackward(int steps)
         {
-            Route.NavigateBackward(steps);
+            return Route.NavigateBackward(steps);
         }
 
         /// <summary>
         /// Navigate forward to history 
         /// </summary>
         /// <param name="steps">Steps to navigate forward</param>
-        public static void NavigateForward(int steps)
+        public static ActionResult NavigateForward(int steps)
         {
-            Route.NavigateForward(steps);
+            return Route.NavigateForward(steps);
         }
 
         /// <summary>

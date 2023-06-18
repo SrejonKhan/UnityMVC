@@ -28,10 +28,10 @@ namespace UnityMVC
         /// Navigate backward to history
         /// </summary>
         /// <param name="steps">Steps to navigate back</param>
-        internal static void NavigateBackward(int steps)
+        internal static ActionResult NavigateBackward(int steps)
         {
             if (history.Count == 0)
-                return;
+                return new FailedViewResult("");
 
             navigateType = NavigateType.Backward;
 
@@ -42,7 +42,7 @@ namespace UnityMVC
             if (view.Equals(lastActiveView))
             {
                 navigateType = NavigateType.None;
-                return;
+                return new FailedViewResult(GetCurrentHist().RouteUrl);
             }
 
             string routeUrl = view.RouteUrl;
@@ -52,17 +52,17 @@ namespace UnityMVC
             if (historyArgs.ContainsKey(routeUrl))
                 args = historyArgs[routeUrl];
 
-            ExecuteNavigation(routeUrl, false, true, args);
+            return ExecuteNavigation(routeUrl, false, false, args);
         }
 
         /// <summary>
         /// Navigate forward to history 
         /// </summary>
         /// <param name="steps">Steps to navigate forward</param>
-        internal static void NavigateForward(int steps)
+        internal static ActionResult NavigateForward(int steps)
         {
             if (history.Count == 0)
-                return;
+                return new FailedViewResult("");
 
             navigateType = NavigateType.Forward;
 
@@ -73,7 +73,7 @@ namespace UnityMVC
             if (view.Equals(lastActiveView))
             {
                 navigateType = NavigateType.None;
-                return;
+                return new FailedViewResult(GetCurrentHist().RouteUrl);
             }
 
             string routeUrl = view.RouteUrl;
@@ -83,7 +83,7 @@ namespace UnityMVC
             if (historyArgs.ContainsKey(routeUrl))
                 args = historyArgs[routeUrl];
 
-            ExecuteNavigation(routeUrl, false, true, args);
+            return ExecuteNavigation(routeUrl, false, false, args);
         }
 
         /// <summary>
