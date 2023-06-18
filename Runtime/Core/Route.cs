@@ -40,7 +40,10 @@ namespace UnityMVC
             var view = history[currentHistIndex];
 
             if (view.Equals(lastActiveView))
+            {
+                navigateType = NavigateType.None;
                 return;
+            }
 
             string routeUrl = view.RouteUrl;
 
@@ -68,7 +71,10 @@ namespace UnityMVC
             var view = history[currentHistIndex];
 
             if (view.Equals(lastActiveView))
+            {
+                navigateType = NavigateType.None;
                 return;
+            }
 
             string routeUrl = view.RouteUrl;
 
