@@ -533,10 +533,10 @@ public ActionType NavigationActionType;
 ```csharp
 public object Model;
 // Handy method for UI OnClick
-public void Navigate(string routeUrl);
-public void NavigatePartial(string route);
-public void NavigateBack();
-public void NavigateForward();
+public virtual ActionResult Navigate(string routeUrl);
+public virtual ActionResult NavigatePartial(string route);
+public virtual ActionResult NavigateBack();
+public virtual ActionResult NavigateForward();
 ```
 
 ### ViewResult

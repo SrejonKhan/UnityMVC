@@ -10,24 +10,24 @@ namespace UnityMVC
         public object Model { get { return model; } set => model = value; }
         public ViewResult ViewResult { get; set; }
 
-        public virtual void Navigate(string routeUrl)
+        public virtual ActionResult Navigate(string routeUrl)
         {
-            MVC.Navigate(routeUrl);
+            return MVC.Navigate(routeUrl);
         }
 
-        public virtual void NavigatePartial(string route)
+        public virtual ActionResult NavigatePartial(string route)
         {
-            MVC.Navigate(route, true);
+            return MVC.Navigate(route, true);
         }
 
-        public virtual void NavigateBack()
+        public virtual ActionResult NavigateBack()
         {
-            MVC.NavigateBackward(1);
+            return MVC.NavigateBackward(1);
         }
 
-        public virtual void NavigateForward()
+        public virtual ActionResult NavigateForward()
         {
-            MVC.NavigateForward(1);
+            return MVC.NavigateForward(1);
         }
     }
 }
