@@ -526,6 +526,7 @@ public ViewResult View(Transform parent, object model, string viewName);
 public UnityEngine.Object Result;
 public Transform Parent;
 public ActionType NavigationActionType;
+public void ReleaseAddressableReference();
 ```
 
 ### ViewContainer

@@ -230,7 +230,7 @@ namespace UnityMVC
             // destroy previous view
             lastActiveView.Destroy();
             // release addressable reference
-            lastActiveView.ReleaseReference();
+            lastActiveView.ReleaseAddressableReference();
 
             // set current view to lastActiveView
             lastActiveView = next;

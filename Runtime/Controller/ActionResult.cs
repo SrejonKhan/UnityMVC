@@ -93,12 +93,11 @@ namespace UnityMVC
             }
         }
 
-        internal void ReleaseReference()
+        public void ReleaseAddressableReference()
         {
             if (!handle.IsValid())
                 return;
 
-            // release handle
             Addressables.Release(handle);
         }
 
