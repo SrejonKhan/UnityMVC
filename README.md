@@ -534,10 +534,16 @@ public void ReleaseAddressableReference();
 ```csharp
 public object Model;
 // Handy method for UI OnClick
-public virtual ActionResult Navigate(string routeUrl);
-public virtual ActionResult NavigatePartial(string route);
-public virtual ActionResult NavigateBack();
-public virtual ActionResult NavigateForward();
+public virtual void Navigate(string routeUrl);
+public virtual void NavigatePartial(string route);
+public virtual void NavigateBack();
+public virtual void NavigateForward();
+
+public virtual ActionResult NavigateActionResult(string routeUrl);
+public virtual ActionResult NavigatePartialActionResult(string route);
+public virtual ActionResult NavigateBackActionResult();
+public virtual ActionResult NavigateForwardActionResult();
+
 public virtual void ReleaseAddressableReference()
 ```
 
