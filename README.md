@@ -554,6 +554,12 @@ public void Refresh();
 public ViewContainer ViewContainerComponent;
 ```
 
+### PendingViewResult
+
+```csharp
+public Action<ActionResult> OnFulfilled;
+```
+
 ### MiddlewareConfiguration
 
 ```csharp

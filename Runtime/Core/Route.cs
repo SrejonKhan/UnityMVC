@@ -159,6 +159,9 @@ namespace UnityMVC
             // add args as param
             actionMethodParams.AddRange(args);
 
+            // any middleware may be waiting for actual view result
+            Action<ActionResult> onResultFulfilled = ((PendingViewResult)result).OnFulfilled;
+
             // invoke action method
             result = null;
             result = (ActionResult)actionMethod.Invoke(controllerInstance, actionMethodParams.ToArray());
@@ -170,6 +173,7 @@ namespace UnityMVC
                 result = new FailedViewResult(routeUrl);
             }
 
+            onResultFulfilled?.Invoke(result);
             result.RouteUrl = routeUrl;
             result.NavigationActionType = actionType;
 
