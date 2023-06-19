@@ -239,14 +239,19 @@ namespace UnityMVC
             // set current view to lastActiveView
             lastActiveView = next;
 
-            // return if it's backward or forward navigation
+            // return if it's backward or forward navigation, because they don't need history updation
             if (navigateType == NavigateType.Forward || navigateType == NavigateType.Backward)
             {
                 navigateType = NavigateType.None;
                 return;
             }
 
-            //history.RemoveRange(currentHistIndex + 1, history.Count - (currentHistIndex + 1));
+            // history updation
+            if(currentHistIndex < history.Count - 1) // if we are not in the last history,  
+            {
+                // remove all history in front of current history
+                history.RemoveRange(currentHistIndex + 1, history.Count - (currentHistIndex + 1)); 
+            }
             history.Add(next);
             currentHistIndex++;
         }
