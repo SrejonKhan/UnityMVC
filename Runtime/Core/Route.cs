@@ -113,10 +113,7 @@ namespace UnityMVC
 
             // invoke middleware
             var middleware = MVC.ConfigureMiddleware();
-            if (shouldContinue && 
-                middleware.HasMiddlewareRegistered(routeUrl) && 
-                MVC.ConfigureMiddleware().IsMiddlewareValid(routeUrl)
-                )
+            if (shouldContinue && middleware.HasMiddlewareRegistered(routeUrl))
             {
                 shouldContinue = MVC.ConfigureMiddleware().InvokeMiddleware(routeUrl, result, actionType);
             }
