@@ -538,6 +538,7 @@ public virtual ActionResult Navigate(string routeUrl);
 public virtual ActionResult NavigatePartial(string route);
 public virtual ActionResult NavigateBack();
 public virtual ActionResult NavigateForward();
+public virtual void ReleaseAddressableReference()
 ```
 
 ### ViewResult

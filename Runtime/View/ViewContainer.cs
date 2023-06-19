@@ -29,6 +29,11 @@ namespace UnityMVC
         {
             return MVC.NavigateForward(1);
         }
+
+        public virtual void ReleaseAddressableReference()
+        {
+            ViewResult.ReleaseAddressableReference();
+        }
     }
 }
 
