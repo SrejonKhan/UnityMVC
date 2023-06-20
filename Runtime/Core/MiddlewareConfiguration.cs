@@ -68,7 +68,7 @@ namespace UnityMVC
             if (!result) return result; // if false, immediately return false
 
             // route specific wildcard - "Home/*"
-            string routeController = route.Substring(0, route.Length - 2);
+            string routeController = route.Split('/')[0];
             if(controllerSpecificAllMiddlewares.ContainsKey(routeController))
                 result = controllerSpecificAllMiddlewares[routeController].Invoke(ctx, type);
 
@@ -82,7 +82,7 @@ namespace UnityMVC
 
         internal bool HasMiddlewareRegistered(string route)
         {
-            string routeController = route.Substring(0, route.Length - 2);
+            string routeController = route.Split('/')[0];
             
             return middlewares.ContainsKey(route) // if any middleware registered for this route
                 || controllerSpecificAllMiddlewares.ContainsKey(routeController) // if middleware registered for controller route
