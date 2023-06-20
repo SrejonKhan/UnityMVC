@@ -309,6 +309,8 @@ The type parameter represents the `ActionType` for the requested view. If the vi
 
 Within the middleware function, you can perform various checks and operations. In the provided example, we check if the user is authenticated (`User.IsAuthenticated`). If the user is not authenticated, we return `false`, indicating that the middleware should block further processing of the route or view. In such case of cancellation, MVC.Navigate() or other similar navigate method will return FailedViewResult which contains nothing but the Route URL. If the user is authenticated, we can perform any other necessary operations or checks and return `true` to allow the route or view to be processed.
 
+Please note that per route can have multiple configurations, which makes this feature much flexible.
+
 If we want to re-configure middleware from scratch again, we can simply call -
 
 ```csharp

@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using MiddlewareDelegate = System.Func<UnityMVC.ActionResult, UnityMVC.ActionType, bool>;
+using MiddlewareDelegateList = System.Collections.Generic.List<System.Func<UnityMVC.ActionResult, UnityMVC.ActionType, bool>>;
 
 namespace UnityMVC
 {
     public class MiddlewareConfiguration
     {
-        private Dictionary<string, MiddlewareDelegate> middlewares = new Dictionary<string, MiddlewareDelegate>();
-        private Dictionary<string, MiddlewareDelegate> controllerSpecificAllMiddlewares = new Dictionary<string, MiddlewareDelegate>();
-        private MiddlewareDelegate allRouteMiddleware;
+        private Dictionary<string, MiddlewareDelegateList> middlewares = new Dictionary<string, MiddlewareDelegateList>();
+        private Dictionary<string, MiddlewareDelegateList> controllerSpecificAllMiddlewares = new Dictionary<string, MiddlewareDelegateList>();
+        private MiddlewareDelegateList allRouteMiddleware = new MiddlewareDelegateList();
         private List<string> middlewareRoutes = new List<string>();
 
         public void OnRoute(string route, MiddlewareDelegate callback)
@@ -23,7 +23,7 @@ namespace UnityMVC
             // all route wildcard
             if(route == "*") 
             {
-                allRouteMiddleware = callback;
+                allRouteMiddleware.Add(callback);
                 return;
             }
 
@@ -33,17 +33,17 @@ namespace UnityMVC
             {
                 string controllerName = route.Substring(0, route.Length - 2);
                 if(controllerSpecificAllMiddlewares.ContainsKey(controllerName))
-                    controllerSpecificAllMiddlewares[controllerName] = callback;
+                    controllerSpecificAllMiddlewares[controllerName].Add(callback);
                 else 
-                    controllerSpecificAllMiddlewares.Add(controllerName, callback);
+                    controllerSpecificAllMiddlewares.Add(controllerName, new MiddlewareDelegateList { callback });
                 return;
             }
 
             if (middlewares.ContainsKey(route))
-                middlewares[route] = callback;
+                middlewares[route].Add(callback);
             else
             {
-                middlewares.Add(route, callback);
+                middlewares.Add(route, new MiddlewareDelegateList { callback });
                 middlewareRoutes.Add(route);
             }
         }
@@ -62,20 +62,47 @@ namespace UnityMVC
             bool result = false;
             
             // all route = "*" wildcard
-            if(allRouteMiddleware != null) 
-                result = allRouteMiddleware.Invoke(ctx, type);
-
+            if(allRouteMiddleware != null)
+            {
+                bool tmpResult = false;
+                for (int i = 0; i < allRouteMiddleware.Count; i++)
+                {
+                    MiddlewareDelegate middleware = allRouteMiddleware[i];
+                    tmpResult = middleware.Invoke(ctx, type);
+                    if (!tmpResult) break;
+                }
+                result = tmpResult;
+            }
+            
             if (!result) return result; // if false, immediately return false
 
             // route specific wildcard - "Home/*"
             string routeController = route.Split('/')[0];
             if(controllerSpecificAllMiddlewares.ContainsKey(routeController))
-                result = controllerSpecificAllMiddlewares[routeController].Invoke(ctx, type);
-
+            {
+                bool tmpResult = false;
+                MiddlewareDelegateList middlewareDelegates = controllerSpecificAllMiddlewares[routeController];
+                for(int i = 0; i < middlewareDelegates.Count; i++)
+                {
+                    tmpResult = middlewareDelegates[i].Invoke(ctx, type);
+                    if (!tmpResult) break;
+                }
+                result = tmpResult;
+            }
             if (!result) return result; // if false, immediately return false
 
-            if (middlewares.ContainsKey(route)) 
-                result = middlewares[route].Invoke(ctx, type);
+            // route specified
+            if (middlewares.ContainsKey(route))
+            {
+                bool tmpResult = false;
+                MiddlewareDelegateList middlewareDelegates = middlewares[route];
+                for(int i = 0; i < middlewareDelegates.Count; i++)
+                {
+                    tmpResult = middlewareDelegates[i].Invoke(ctx, type);
+                    if(!tmpResult) break;
+                }
+                result = tmpResult;
+            }
 
             return result;
         }
