@@ -29,6 +29,16 @@ Here are the key features of UnityMVC:
 - Paste the following link - `https://github.com/SrejonKhan/UnityMVC.git`
 - Click Add.
 
+### Sample Project
+
+If you are interested in exploring practical examples and use cases of the UnityMVC library, we have a dedicated sample project repository available. The [UnityMVC Sample Project](https://github.com/SrejonKhan/UnityMVC-Sample) provides a collection of samples that showcase the features and capabilities of the UnityMVC library in action.
+
+In the sample project, you will find demonstrations of various features of the library. It's a great resource for getting hands-on experience with UnityMVC and understanding how it can enhance your Unity projects.
+
+To access the UnityMVC Sample Project repository, please visit this [repository](https://github.com/SrejonKhan/UnityMVC-Sample).
+
+We encourage you to explore the sample project and leverage the provided examples as a reference for your own UnityMVC implementations. If you have any feedback or suggestions regarding the sample project, feel free to open an issue or contribute to the repository.
+
 # History
 
 MVC (Model-View-Controller) is a widely used Software Design Pattern. It is commonly used for developing user interfaces that divide the related program logic into three interconnected elements.
@@ -570,3 +580,5 @@ using MiddlewareDelegate = System.Func<UnityMVC.ActionResult, UnityMVC.ActionTyp
 public void OnRoute(string route, MiddlewareDelegate callback);
 public void RemoveRouteConfiguration(string route);
 ```
+
+Happy coding with UnityMVC!
