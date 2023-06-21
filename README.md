@@ -468,24 +468,6 @@ UnityMVC doesn't implement Zenject in Core, as dynamic instantiation is differen
 4. In each view prefab, which corresponding ViewClass implement zenject, add `ZenjectDynamicObjectInjection.cs` to it.
 5. Done.
 
-# Creating a Main Menu with MVC
-
-**_THIS PART IS INCOMPLETE, PLEASE WATCH FOR COMPLETE DOCUMENTATION._**
-
-## Goal
-
-Make a main menu with UnityMVC.
-
-## Create UI
-
-## Create Controller
-
-## Create Model
-
-## Create View
-
-## Navigating
-
 # Debugger
 
 ### Route History Debugger
