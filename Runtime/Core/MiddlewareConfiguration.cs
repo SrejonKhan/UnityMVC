@@ -113,7 +113,7 @@ namespace UnityMVC
             
             return middlewares.ContainsKey(route) // if any middleware registered for this route
                 || controllerSpecificAllMiddlewares.ContainsKey(routeController) // if middleware registered for controller route
-                || allRouteMiddleware != null; // if all route middleware registered
+                || allRouteMiddleware.Count > 0; // if all route middleware registered
         }
     }
 }
